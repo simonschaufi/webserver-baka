@@ -23,13 +23,15 @@ public abstract class ReplyHeader
     ArrayList<String> head;
     OutputStream out;
     String keepAlive;
+    Interface gui;
 
     /**
      * @param OutputStream; ClientRequest
      * 
      */
-    public ReplyHeader(OutputStream out, ClientRequest request)
+    public ReplyHeader(OutputStream out, ClientRequest request, Interface i)
     {
+        this.gui = i;
         head = new ArrayList<String>();
         this.out = out;
         this.request = request;
@@ -57,13 +59,16 @@ public abstract class ReplyHeader
             {
                 out.write(head.get(i).getBytes());
                 System.out.write(head.get(i).getBytes());
+                gui.printMessages((head.get(i).toString()).trim());
             }
+            
             out.write(RFC2616.CRLF.getBytes());
+
             
         }
         catch (IOException e)
         {
-            System.out.println("Fehler beim Senden des Response-Headers: " + e.getMessage());
+            gui.printMessages("Fehler beim Senden des Response-Headers: " + e.getMessage());
         }
 
     }

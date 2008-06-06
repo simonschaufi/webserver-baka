@@ -26,6 +26,7 @@ public class ClientRequest {
     DataInputStream inputStream;
     byte[] bytesOfDataInputStream;
     ArrayList<String> request;
+    Interface gui;
     
     String httpVersion = "";
     String kindOfRequest = "";
@@ -40,7 +41,8 @@ public class ClientRequest {
  * Konstruktor der den Input gleich zerlegt
  * @param in der InputStream des Sockets
  */
-    public ClientRequest(InputStream in) {
+    public ClientRequest(InputStream in, Interface i) {
+        this.gui = i;
         this.inputStream = new DataInputStream(in);
         this.request = new ArrayList<String>();
         getBytesInStream();
@@ -75,7 +77,7 @@ public class ClientRequest {
         bytesOfDataInputStream = new byte[numberOfBytes];
         inputStream.readFully(bytesOfDataInputStream);
         }catch(IOException e){
-            System.out.println("Fehler beim lesen der Bytes im InputStream: "+e.getMessage());
+            gui.printMessages("Fehler beim lesen der Bytes im InputStream: "+e.getMessage());
         }
     }
     /**

@@ -21,8 +21,8 @@ public class ReplySimpleSatus extends ReplyHeader{
     /**
      * @param OutputStream; ClientRequest; String
      */
-    public ReplySimpleSatus(OutputStream out, ClientRequest request, String statusCode) {
-        super(out,  request);
+    public ReplySimpleSatus(OutputStream out, ClientRequest request, String statusCode, Interface i) {
+        super(out,  request, i);
         this.statusCode = statusCode;
         
     }
