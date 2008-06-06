@@ -51,6 +51,7 @@ public class Server extends Thread
                 con = new Connection(socket.accept(), gui);
                 if (con != null)
                     con.start();
+
             }
             catch (IOException e)
             {

@@ -15,7 +15,7 @@ import java.io.OutputStream;
  *
  * @author sebi
  */
-public class ReplySimpleSatus extends ReplyHeader{
+public class ReplySimpleSatus extends CreateResponse{
 
     private String statusCode;
     /**
@@ -37,4 +37,5 @@ public class ReplySimpleSatus extends ReplyHeader{
         sendHeader();
         return;
      }
+     
 }

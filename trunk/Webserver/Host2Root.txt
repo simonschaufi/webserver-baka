@@ -1,2 +1,0 @@
-localhost / c:\webserver
-127.0.0.1 / c:\webserver2
