@@ -49,6 +49,8 @@ public class RFC2616 {
     
     public static final String      HTTP_STATUS_204   = "204 No Content";
     
+    public static final String      HTTP_STATUS_302   = "302 Found";
+    
     public static final String      HTTP_STATUS_400   = "400 Bad Request";
     
     public static final String      HTTP_STATUS_403   = "403 Forbidden";
@@ -63,4 +65,5 @@ public class RFC2616 {
 
     public RFC2616() {
     }
+    
 }

@@ -1,6 +1,7 @@
 package webserver;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /*
@@ -52,12 +53,19 @@ public class ReplyHeaderGET extends ReplyHeader{
      * @return void
      */
     public void checkChunked(){
+        try{
         if(Settings.chunked && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0"))){
-            addLine("Content-Type: "+new MimetypesFileTypeMap().getContentType(file2get));
+            //addLine("Content-Type: "+new MimetypesFileTypeMap().getContentType(file2get));
+            addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
             addLine("Transfer-Encoding: chunked");
         }else{
             addLine("Content-Length: "+file2get.length());
-            addLine("Content-Type: "+new MimetypesFileTypeMap().getContentType(file2get));
-        }     
+            //addLine("Content-Type: "+new MimetypesFileTypeMap().getContentType(file2get));
+            addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
+        } 
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }
