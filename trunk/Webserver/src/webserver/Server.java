@@ -21,10 +21,12 @@ public class Server extends Thread
     public ServerSocket socket;
     Connection con;
     Boolean run = true;
+    Interface gui =null;
 
     /** Creates a new instance of Server */
-    public Server()
+    public Server(Interface i)
     {
+        this.gui = i;
         try
         {
             socket = new ServerSocket(Settings.port);
@@ -32,7 +34,7 @@ public class Server extends Thread
         }
         catch (IOException e)
         {
-            System.out.println("Fehler beim Erstellen des Socket: " + e.getMessage());
+            gui.printMessages("Fehler beim Erstellen des Socket: " + e.getMessage());
         }
 
     }
@@ -46,20 +48,21 @@ public class Server extends Thread
         {
             try
             {
-                con = new Connection(socket.accept());
+                con = new Connection(socket.accept(), gui);
                 if (con != null)
                     con.start();
             }
             catch (IOException e)
             {
                 if (e.getMessage().equals("socket closed"))
-                    System.out.println("Der Server-Socket wurde geschlossen");
+                    gui.printMessages("Der Server-Socket wurde geschlossen");
                 else
-                    System.out.println("Fehler beim Oeffnen des Client-Socket: " + e.getMessage());
+                    gui.printMessages("Fehler beim Oeffnen des Client-Socket: " + e.getMessage());
             }
             catch (NullPointerException e)
             {
-                System.out.println("Fehler, Port 80 wird bereits benutzt: " + e.toString());
+                gui.printMessages("Fehler, Port 80 wird bereits benutzt: " + e.toString());
+                run = false;
             }
         }
         try
@@ -68,10 +71,10 @@ public class Server extends Thread
         }
         catch (IOException e)
         {
-            System.out.println("Fehler beim Schließen des Sockets: " + e.getMessage());
+            gui.printMessages("Fehler beim Schließen des Sockets: " + e.getMessage());
         }
 
-        System.out.println("Server wird beendet");
+        gui.printMessages("Server wird beendet");
     }
 
     /**
@@ -86,7 +89,7 @@ public class Server extends Thread
         }
         catch (IOException e)
         {
-            System.out.println("Fehler beim Schließen des Sockets: " + e.getMessage());
+            gui.printMessages("Fehler beim Schließen des Sockets: " + e.getMessage());
         }
     }
 }

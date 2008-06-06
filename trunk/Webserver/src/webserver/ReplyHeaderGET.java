@@ -22,13 +22,16 @@ public class ReplyHeaderGET extends ReplyHeader{
    
     File file2get;
     String keepAlive;
+    Interface gui;
+    
     
     /**
      * @param OutputStream; File; ClientRequest
      */
-    public ReplyHeaderGET(OutputStream out, File file2get,ClientRequest request) {
-        super(out,request);
+    public ReplyHeaderGET(OutputStream out, File file2get,ClientRequest request, Interface i) {
+        super(out,request, i);
         this.file2get = file2get;
+        this.gui = i;
     }
     
     /**
@@ -55,12 +58,11 @@ public class ReplyHeaderGET extends ReplyHeader{
     public void checkChunked(){
         try{
         if(Settings.chunked && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0"))){
-            //addLine("Content-Type: "+new MimetypesFileTypeMap().getContentType(file2get));
+
             addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
             addLine("Transfer-Encoding: chunked");
         }else{
             addLine("Content-Length: "+file2get.length());
-            //addLine("Content-Type: "+new MimetypesFileTypeMap().getContentType(file2get));
             addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
         } 
         }

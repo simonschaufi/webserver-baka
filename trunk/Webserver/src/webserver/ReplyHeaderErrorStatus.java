@@ -24,16 +24,16 @@ public class ReplyHeaderErrorStatus extends ReplyHeader
     /**
      * @param OutputStream; String; ClientRequest
      */
-    public ReplyHeaderErrorStatus(OutputStream out, String errorHeader, ClientRequest request)
+    public ReplyHeaderErrorStatus(OutputStream out, String errorHeader, ClientRequest request, Interface i)
     {
-        super(out, request);
+        super(out, request, i);
         this.errorHeader = errorHeader;
     }
 
     
     void setPath(String path)
     {
-        System.out.println("Bla: " + path);
+        gui.printMessages("Bla: " + path);
         this.Path = path;
     }
     
@@ -67,7 +67,7 @@ public class ReplyHeaderErrorStatus extends ReplyHeader
             }
             catch (IOException e)
             {
-                System.out.println("Fehler beim Schicken der Fehlerstatus " + errorHeader + " :" + e.getMessage());
+                gui.printMessages("Fehler beim Schicken der Fehlerstatus " + errorHeader + " :" + e.getMessage());
             }
         }
         return;

@@ -28,10 +28,12 @@ public class Connection extends Thread{
     Message theMessage;
     DataInputStream dataInput;
     ClientRequest request;
+    Interface gui;
     
     
-    public Connection(Socket aSocket) 
+    public Connection(Socket aSocket, Interface i) 
     {
+        this.gui = i;
         try
         {   
             theSocket = aSocket;
@@ -41,7 +43,7 @@ public class Connection extends Thread{
         }
         catch(IOException e)
         {
-            System.out.println("Fehler beim erstellen der Connection-Klasse: "+e.getMessage());
+            gui.printMessages("Fehler beim erstellen der Connection-Klasse: "+e.getMessage());
         }
     }
     
@@ -54,15 +56,16 @@ public class Connection extends Thread{
                     read();
                     if(!(request.getKeepAlive().equalsIgnoreCase("Keep-Alive")) || request.getHttpVersion().equalsIgnoreCase("HTTP/1.0"))
                         theSocket.close();
-                    System.out.println("Socket: "+theSocket.getPort());
+                    gui.printMessages("Socket: "+theSocket.getPort());
+                    gui.printMessages(" ");
                 }
                 sleep(10);
             }    
         }catch(IOException e){
-            System.out.println("Fehler in der persistenten Verbindung: "+ e.getMessage());
+            gui.printMessages("Fehler in der persistenten Verbindung: "+ e.getMessage());
         }catch(InterruptedException e)
         {   
-            System.out.println("Fehler, Socket wurde geschlossen: "+e.getMessage());
+            gui.printMessages("Fehler, Socket wurde geschlossen: "+e.getMessage());
         }
     }
     
@@ -70,8 +73,8 @@ public class Connection extends Thread{
     {        
         try
         {                    
-            request = new ClientRequest(theSocket.getInputStream());
-            theMessage = new Message(request, out);
+            request = new ClientRequest(theSocket.getInputStream(), gui);
+            theMessage = new Message(request, out, gui);
             String kindOfMessage = request.getKindOfRequest();
             if(kindOfMessage.equals("GET"))
             {
@@ -84,7 +87,7 @@ public class Connection extends Thread{
                    }
                    catch(InterruptedException e)
                    {
-                       System.out.println("100 continue - unable to sleep: "+e.getMessage());
+                       gui.printMessages("100 continue - unable to sleep: "+e.getMessage());
                    }
                 }
                 theMessage.replyRequest(true);
@@ -92,7 +95,7 @@ public class Connection extends Thread{
             else if(kindOfMessage.equals("POST"))
             {              
                 theMessage.writePostToFile(request.getPostContent()); 
-                new ReplySimpleSatus(out, request, RFC2616.HTTP_STATUS_204).generateResponse();
+                new ReplySimpleSatus(out, request, RFC2616.HTTP_STATUS_204, gui).generateResponse();
             }
             else if(kindOfMessage.equals("HEAD"))
             {
@@ -108,11 +111,11 @@ public class Connection extends Thread{
         }
         catch(IOException e)
         {
-            System.out.println("Fehler beim Ermitteln des Client-Requests: "+e.getMessage()); 
+            gui.printMessages("Fehler beim Ermitteln des Client-Requests: "+e.getMessage()); 
         }
         catch(ClientException e){
-            System.out.println("Fehler: "+e.getMessage());
-            ReplyHeaderErrorStatus rhes = new ReplyHeaderErrorStatus(out,e.getMessage(),request);
+            gui.printMessages("Fehler: "+e.getMessage());
+            ReplyHeaderErrorStatus rhes = new ReplyHeaderErrorStatus(out,e.getMessage(),request, gui);
             rhes.setPath(request.getPath());
             rhes.generateResponse();
         }    

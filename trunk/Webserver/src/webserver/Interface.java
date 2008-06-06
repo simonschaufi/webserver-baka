@@ -19,6 +19,12 @@ public class Interface extends javax.swing.JFrame {
     
     /** Creates new form Interface */
     Server s = null;
+    
+    public void printMessages(String message)
+    {
+        this.ListMessages.add(message);
+    }
+    
     public Interface() {
         super("MSP Webserver -- yeah!");
         initComponents();
@@ -32,29 +38,29 @@ public class Interface extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        Host2RootLabel = new javax.swing.JLabel();
-        AddNewHost2Root = new javax.swing.JButton();
-        DeleteHost2Root = new javax.swing.JButton();
-        PortLabel = new javax.swing.JLabel();
-        SetPort = new javax.swing.JButton();
-        HostText = new java.awt.TextField();
-        RootText = new java.awt.TextField();
-        PortText = new java.awt.TextField();
-        Host2RootList = new java.awt.List();
-        Information = new java.awt.Label();
-        Portinformation = new java.awt.Label();
-        jPanel2 = new javax.swing.JPanel();
-        StopServer = new javax.swing.JButton();
-        RunServer = new javax.swing.JButton();
-        status = new java.awt.Label();
+        PanelAll = new javax.swing.JPanel();
+        LabelMultihoming = new javax.swing.JLabel();
+        ButtonDeleteMultihoming = new javax.swing.JButton();
+        LabelPort = new javax.swing.JLabel();
+        TextFieldPort = new java.awt.TextField();
+        ListMultihoming = new java.awt.List();
+        
+        
+        ButtonRun = new javax.swing.JButton();
+        ButtonStop = new javax.swing.JButton();
+        LabelStatus = new java.awt.Label();
+        LabelDefault = new javax.swing.JLabel();
+        LabelMessages = new javax.swing.JLabel();
+        ListMessages = new java.awt.List();
+        ButtonSet = new javax.swing.JButton();
+        PanelMultihoming = new javax.swing.JPanel();
+        ButtonAdd = new javax.swing.JButton();
+        TextFieldRoot = new java.awt.TextField();
+        TextFieldHost = new java.awt.TextField();
+        LabelHost = new javax.swing.JLabel();
+        LabelRoot = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowStateListener(new java.awt.event.WindowStateListener() {
-            public void windowStateChanged(java.awt.event.WindowEvent evt) {
-                formWindowStateChanged(evt);
-            }
-        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 WindowStartet(evt);
@@ -63,185 +69,232 @@ public class Interface extends javax.swing.JFrame {
                 formWindowOpened(evt);
             }
         });
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("server settings"));
-
-        Host2RootLabel.setFont(new java.awt.Font("Tahoma", 1, 12));
-        Host2RootLabel.setText("host 2 root list");
-
-        AddNewHost2Root.setText("add new");
-        AddNewHost2Root.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AddNewHost2RootMouseClicked(evt);
+        addWindowStateListener(new java.awt.event.WindowStateListener() {
+            public void windowStateChanged(java.awt.event.WindowEvent evt) {
+                formWindowStateChanged(evt);
             }
         });
 
-        DeleteHost2Root.setText("delete");
-        DeleteHost2Root.addMouseListener(new java.awt.event.MouseAdapter() {
+        LabelMultihoming.setFont(new java.awt.Font("Tahoma", 1, 12));
+        LabelMultihoming.setText("Multihoming");
+
+        ButtonDeleteMultihoming.setText("delete");
+        ButtonDeleteMultihoming.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                DeleteHost2Root_Click(evt);
+                ButtonDeleteMultihoming_Click(evt);
             }
         });
-        DeleteHost2Root.addActionListener(new java.awt.event.ActionListener() {
+        ButtonDeleteMultihoming.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteHost2RootActionPerformed(evt);
+                ButtonDeleteMultihomingActionPerformed(evt);
             }
         });
 
-        PortLabel.setFont(new java.awt.Font("Tahoma", 1, 12));
-        PortLabel.setText("port");
+        LabelPort.setFont(new java.awt.Font("Tahoma", 0, 12));
+        LabelPort.setText("port");
 
-        SetPort.setText("set");
-        SetPort.addMouseListener(new java.awt.event.MouseAdapter() {
+        TextFieldPort.setFont(new java.awt.Font("Dialog", 2, 12));
+        TextFieldPort.setForeground(new java.awt.Color(204, 204, 255));
+        TextFieldPort.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SetPort_Click(evt);
+                TextFieldPort_Click(evt);
             }
         });
-
-        HostText.setFont(new java.awt.Font("Dialog", 2, 12));
-        HostText.setForeground(new java.awt.Color(204, 204, 255));
-        HostText.setText("host");
-        HostText.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                HostText_Click(evt);
-            }
-        });
-        HostText.addFocusListener(new java.awt.event.FocusAdapter() {
+        TextFieldPort.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                HostText_LostFocus(evt);
+                TextFieldPort_FocusLost(evt);
             }
         });
 
-        RootText.setFont(new java.awt.Font("Dialog", 2, 12));
-        RootText.setForeground(new java.awt.Color(204, 204, 255));
-        RootText.setText("root");
-        RootText.addMouseListener(new java.awt.event.MouseAdapter() {
+
+
+        
+
+        ButtonRun.setText("run server");
+        ButtonRun.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RootText_Click(evt);
-            }
-        });
-        RootText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                RootText_LostFocus(evt);
+                ButtonRunMouseClicked(evt);
             }
         });
 
-        PortText.setFont(new java.awt.Font("Dialog", 2, 12));
-        PortText.setForeground(new java.awt.Color(204, 204, 255));
-        PortText.setText("standard port 80 is set");
-        PortText.addMouseListener(new java.awt.event.MouseAdapter() {
+        ButtonStop.setText("stop server");
+        ButtonStop.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                PortText_Click(evt);
-            }
-        });
-        PortText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                PortText_FocusLost(evt);
+                ButtonStopMouseClicked(evt);
             }
         });
 
-        Information.setForeground(new java.awt.Color(255, 0, 51));
+        LabelStatus.setFont(new java.awt.Font("Dialog", 1, 12));
+        LabelStatus.setForeground(new java.awt.Color(255, 0, 51));
+        LabelStatus.setText("stopped");
 
-        Portinformation.setForeground(new java.awt.Color(255, 0, 0));
+        LabelDefault.setText("Default is port 80");
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(Host2RootLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
-                            .add(Portinformation, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, RootText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, Host2RootList, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
-                                        .add(PortLabel)
+        LabelMessages.setFont(new java.awt.Font("Tahoma", 1, 12));
+        LabelMessages.setText("Server Messages");
+
+        ListMessages.setBackground(new java.awt.Color(0, 0, 102));
+        ListMessages.setForeground(new java.awt.Color(102, 204, 0));
+
+        ButtonSet.setText("set");
+        ButtonSet.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonSet_Click(evt);
+            }
+        });
+
+        org.jdesktop.layout.GroupLayout PanelAllLayout = new org.jdesktop.layout.GroupLayout(PanelAll);
+        PanelAll.setLayout(PanelAllLayout);
+        PanelAllLayout.setHorizontalGroup(
+            PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(PanelAllLayout.createSequentialGroup()
+                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(PanelAllLayout.createSequentialGroup()
+                        .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, PanelAllLayout.createSequentialGroup()
+                                .add(37, 37, 37)
+                                
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                            .add(PanelAllLayout.createSequentialGroup()
+                                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, LabelMultihoming, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, ListMultihoming, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(LabelMessages, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                                    .add(PanelAllLayout.createSequentialGroup()
+                                        .add(ButtonRun)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(Information, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, HostText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, PortText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(SetPort, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                            .add(AddNewHost2Root, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .add(DeleteHost2Root, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(ButtonStop)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(LabelStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(ListMessages, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)))
+                            .add(PanelAllLayout.createSequentialGroup()
+                                .add(LabelPort)
+                                .add(14, 14, 14)
+                                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(LabelDefault)
+                                    .add(PanelAllLayout.createSequentialGroup()
+                                        .add(TextFieldPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 452, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(ButtonSet, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)))))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                    .add(ButtonDeleteMultihoming, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                .add(15, 15, 15)
-                .add(Host2RootLabel)
+        PanelAllLayout.setVerticalGroup(
+            PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, PanelAllLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(LabelMultihoming)
+                    .add(LabelMessages))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(Host2RootList, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 146, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(DeleteHost2Root)
-                .add(19, 19, 19)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(HostText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(13, 13, 13)
-                        .add(RootText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(AddNewHost2Root, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 53, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(20, 20, 20)
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(Information, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(PortLabel))
+                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(ListMessages, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                    .add(ListMultihoming, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 146, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(PanelAllLayout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(ButtonDeleteMultihoming)
+                            .add(ButtonRun)
+                            .add(ButtonStop))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                    .add(PanelAllLayout.createSequentialGroup()
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(PortText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(SetPort))
-                .add(37, 37, 37)
-                .add(Portinformation, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(LabelStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(PanelAllLayout.createSequentialGroup()
+                        .add(PanelAllLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(LabelPort)
+                            .add(TextFieldPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(LabelDefault))
+                    .add(ButtonSet))
+                .add(30, 30, 30)
+
+                .add(67, 67, 67)
+
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("server control"));
+        PanelMultihoming.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Multihoming - Add new site", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
-        StopServer.setText("stop server");
-        StopServer.addMouseListener(new java.awt.event.MouseAdapter() {
+        ButtonAdd.setText("Add");
+        ButtonAdd.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                StopServerMouseClicked(evt);
+                ButtonAddMouseClicked(evt);
             }
         });
 
-        RunServer.setText("run server");
-        RunServer.addMouseListener(new java.awt.event.MouseAdapter() {
+        TextFieldRoot.setFont(new java.awt.Font("Dialog", 2, 12));
+        TextFieldRoot.setForeground(new java.awt.Color(204, 204, 255));
+        TextFieldRoot.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RunServerMouseClicked(evt);
+                TextFieldRoot_Click(evt);
+            }
+        });
+        TextFieldRoot.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                TextFieldRoot_LostFocus(evt);
             }
         });
 
-        status.setForeground(new java.awt.Color(255, 0, 51));
-        status.setText("stopped");
+        TextFieldHost.setFont(new java.awt.Font("Dialog", 2, 12));
+        TextFieldHost.setForeground(new java.awt.Color(204, 204, 255));
+        TextFieldHost.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TextFieldHost_Click(evt);
+            }
+        });
+        TextFieldHost.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                TextFieldHost_LostFocus(evt);
+            }
+        });
 
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(RunServer)
+        LabelHost.setText("Host");
+
+        LabelRoot.setText("Root");
+
+        org.jdesktop.layout.GroupLayout PanelMultihomingLayout = new org.jdesktop.layout.GroupLayout(PanelMultihoming);
+        PanelMultihoming.setLayout(PanelMultihomingLayout);
+        PanelMultihomingLayout.setHorizontalGroup(
+            PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(PanelMultihomingLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(LabelRoot)
+                    .add(LabelHost))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(StopServer)
-                .add(119, 119, 119)
-                .add(status, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(242, Short.MAX_VALUE))
+                .add(PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(TextFieldHost, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(TextFieldRoot, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(ButtonAdd)
+                .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(RunServer)
-                        .add(StopServer))
-                    .add(status, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        PanelMultihomingLayout.setVerticalGroup(
+            PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(PanelMultihomingLayout.createSequentialGroup()
+                .add(21, 21, 21)
+                .add(PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(TextFieldHost, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(LabelHost))
+                .add(13, 13, 13)
+                .add(PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(PanelMultihomingLayout.createSequentialGroup()
+                        .add(ButtonAdd, 0, 0, Short.MAX_VALUE)
+                        .add(14, 14, 14))
+                    .add(PanelMultihomingLayout.createSequentialGroup()
+                        .add(3, 3, 3)
+                        .add(PanelMultihomingLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(LabelRoot)
+                            .add(TextFieldRoot, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -251,17 +304,17 @@ public class Interface extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(PanelAll, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(PanelMultihoming, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 566, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 407, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(20, 20, 20))
+                .add(PanelAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 290, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(PanelMultihoming, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -272,34 +325,34 @@ public class Interface extends javax.swing.JFrame {
  * Methode wird beim Klicken auf den Stop Button aufgerufen
  * StopServerMouseClicked stopt den Server
  */
-private void StopServerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopServerMouseClicked
+    private void ButtonStopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonStopMouseClicked
     // TODO add your handling code here:
     if(s!= null)
    {       
        s.closeServer();
        s = null;
-       status.setText("stopped");
-        status.setFont(new Font("",Font.PLAIN,12));
-        status.setForeground(Color.RED);
+       LabelStatus.setText("stopped");
+        LabelStatus.setFont(new Font("",Font.PLAIN,12));
+        LabelStatus.setForeground(Color.RED);
    }
-}//GEN-LAST:event_StopServerMouseClicked
+}//GEN-LAST:event_ButtonStopMouseClicked
 /**
  * @param Mausevent
  * @return void
  * Methode wird beim Klicken auf den Start Button aufgerufen
  * RunServerMouseClicked startet einen neuen Server
  */
-private void RunServerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RunServerMouseClicked
+private void ButtonRunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonRunMouseClicked
     
     if(s==null){
-        s = new Server();
+        s = new Server(this);
         s.start();
-        status.setText("running");
-        status.setFont(new Font("",Font.PLAIN,12));
-        status.setForeground(Color.GREEN);
+        LabelStatus.setText("running");
+        LabelStatus.setFont(new Font("",Font.PLAIN,12));
+        LabelStatus.setForeground(Color.GREEN);
     }
 
-}//GEN-LAST:event_RunServerMouseClicked
+}//GEN-LAST:event_ButtonRunMouseClicked
 /**
  * Methode wird nicht mehr verwendet
  */
@@ -317,7 +370,7 @@ private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event
         String[] Host2RootListArray = Host2RootFile.readFile();     
         int i = 0;
         while(Host2RootListArray[i] != null){
-            Host2RootList.add(Host2RootListArray[i]);
+            ListMultihoming.add(Host2RootListArray[i]);
             String[] HostAndRoot = SubstringHostRoot(Host2RootListArray[i]);
             Settings.addHost(HostAndRoot[0], HostAndRoot[1]);
             i++;
@@ -336,10 +389,10 @@ private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST
  * Methode wird beim Klicken auf den SetPort Button aufgerufen
  * SetPort_Click verändert den Port auf dem der Server lauschen soll
  */
-private void SetPort_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SetPort_Click
-    if(!(PortText.getText().equals("standard port 80 is set"))){
+private void ButtonSet_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonSet_Click
+    if(!(TextFieldPort.getText().equals("standard port 80 is set"))){
         char[] Zahlen = {'0','1','2','3','4','5','6','7','8','9'};
-        char[] PortTextCharArray = PortText.getText().toCharArray();
+        char[] PortTextCharArray = TextFieldPort.getText().toCharArray();
         boolean check = false;
         for(int i = 0; i <= PortTextCharArray.length - 1; i++)
         {
@@ -355,119 +408,114 @@ private void SetPort_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Set
         }
         if(check == true)
         {
-            Settings.port = Integer.parseInt(PortText.getText());
-            Portinformation.setText("port set to:" + Settings.port);
-            Portinformation.setForeground(Color.BLACK);
+            Settings.port = Integer.parseInt(TextFieldPort.getText());
+
         }
         else{
-            Portinformation.setForeground(Color.RED);
-            Portinformation.setText("Bitte nur Zahlen eingeben");
+
         }
     }
     else
     {
-        Portinformation.setForeground(Color.RED);
-        Portinformation.setText("Bitte Portnummer eingeben");
+                
     }
-}//GEN-LAST:event_SetPort_Click
+}//GEN-LAST:event_ButtonSet_Click
 /**
  * @param Mausevent
  * @return void
  * Methode wird beim Klicken auf den Delete Button ausgeführt
  * DeleteHost2Root_Click löscht die aktuell markierte Zeile in der Host2RootList
  */
-private void DeleteHost2Root_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteHost2Root_Click
-    if(Host2RootList.getSelectedItem() != null){
-        StringTokenizer st = new StringTokenizer(Host2RootList.getSelectedItem(), " / ");
+private void ButtonDeleteMultihoming_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonDeleteMultihoming_Click
+    if(ListMultihoming.getSelectedItem() != null){
+        StringTokenizer st = new StringTokenizer(ListMultihoming.getSelectedItem(), " / ");
         Settings.deleteHost(st.nextToken());
-        Host2RootList.remove(Host2RootList.getSelectedIndex());
-        String[] sta = Host2RootList.getItems();
+        ListMultihoming.remove(ListMultihoming.getSelectedIndex());
+        String[] sta = ListMultihoming.getItems();
         Host2RootFile.writeFile(sta);
     }   
-}//GEN-LAST:event_DeleteHost2Root_Click
+}//GEN-LAST:event_ButtonDeleteMultihoming_Click
 /**
  * @param Mausevent
  * @return
  * Methode wird beim Klicken auf den ADD Button aufgerufen
  * AddNewHost2RootMouseClicke fügt einen Host2RootList Eintrag hinzu
- */
-private void AddNewHost2RootMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddNewHost2RootMouseClicked
-    //prüfen ob Text ungleich NULL und einfügen in HashMap
-    if(!(HostText.getText().equals("host")) && !(RootText.getText().equals("root"))){
-        String Host2Root = HostText.getText() + " / " + RootText.getText();
-        if(Settings.getRoot(HostText.getText()) == null){
-            Host2RootList.add(Host2Root);
-            Settings.addHost(HostText.getText(), RootText.getText());
-            Information.setText("");
-            String[] sta = Host2RootList.getItems();
-            Host2RootFile.writeFile(sta);
-        }
-        else{
-            Information.setText("Host2Root schon in Liste enthalten");
-        }
-    }
-    else{
-        Information.setText("Bitte host und root angeben!");
-    }
-}//GEN-LAST:event_AddNewHost2RootMouseClicked
-/**
+ *//**
  * @param FocusEvent
  * @return void
  * Mehtode wird aufgerufen wen die RootText_Textbox den Focus verliert
  * RootTExt_LostFocus ruft die CheckText - Methode auf
  */
-private void RootText_LostFocus(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_RootText_LostFocus
-    CheckText(RootText,"root");
-}//GEN-LAST:event_RootText_LostFocus
+private void TextFieldRoot_LostFocus(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TextFieldRoot_LostFocus
+    CheckText(TextFieldRoot,"root");
+}//GEN-LAST:event_TextFieldRoot_LostFocus
 /**
  * @param MausEvent
  * @return void
  * Methode wird aufgerufen wenn in die RootText_Textbox geklickt wird
  * RootText_Click ruft die ChangeSettingsOfTextbox auf
  */
-private void RootText_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RootText_Click
-    ChangeSettingsOfTextbox(RootText);
-}//GEN-LAST:event_RootText_Click
+private void TextFieldRoot_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextFieldRoot_Click
+    ChangeSettingsOfTextbox(TextFieldRoot);
+}//GEN-LAST:event_TextFieldRoot_Click
 /**
  * @param FocusEvent
  * @return void
  * Mehtode wird aufgerufen wen die PortText_Textbox den Focus erhält
  * PortText_FocusLost fur die CheckText Methode auf
  */
-private void PortText_FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_PortText_FocusLost
-    CheckText(PortText,"standard port 80 is set");
-}//GEN-LAST:event_PortText_FocusLost
+private void TextFieldPort_FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TextFieldPort_FocusLost
+    CheckText(TextFieldPort,"standard port 80 is set");
+}//GEN-LAST:event_TextFieldPort_FocusLost
 /**
  * @param MausEvent
  * @return void
  * Methode wird aufgerufen wenn in die PortText_Textbox geklickt wird
  * PortText_Click ruft die ChangeSettingsOfTextbox auf
  */
-private void PortText_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PortText_Click
-    ChangeSettingsOfTextbox(PortText);
-}//GEN-LAST:event_PortText_Click
+private void TextFieldPort_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextFieldPort_Click
+    ChangeSettingsOfTextbox(TextFieldPort);
+}//GEN-LAST:event_TextFieldPort_Click
 /**
  * @param FocusEvent
  * @return void
  * Mehtode wird aufgerufen wen die HostText_Textbox den Focus erhält
  * HostText_LostFocus ruft die CheckText Methode auf
  */
-private void HostText_LostFocus(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_HostText_LostFocus
-    CheckText(HostText,"host");
-}//GEN-LAST:event_HostText_LostFocus
+private void TextFieldHost_LostFocus(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TextFieldHost_LostFocus
+    CheckText(TextFieldHost,"host");
+}//GEN-LAST:event_TextFieldHost_LostFocus
 /**
  * @param MausEvent
  * @return void
  * Methode wird aufgerufen wenn in die HostText_Textbox geklickt wird
  * HostText_Click ruft die ChangeSettingsOfTextbox Methode auf
  */
-private void HostText_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HostText_Click
-    ChangeSettingsOfTextbox(HostText);
-}//GEN-LAST:event_HostText_Click
+private void TextFieldHost_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TextFieldHost_Click
+    ChangeSettingsOfTextbox(TextFieldHost);
+}//GEN-LAST:event_TextFieldHost_Click
 
-private void DeleteHost2RootActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteHost2RootActionPerformed
+private void ButtonDeleteMultihomingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonDeleteMultihomingActionPerformed
     // TODO add your handling code here:
-}//GEN-LAST:event_DeleteHost2RootActionPerformed
+}//GEN-LAST:event_ButtonDeleteMultihomingActionPerformed
+
+private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonAddMouseClicked
+    //prüfen ob Text ungleich NULL und einfügen in HashMap
+    if(!(TextFieldHost.getText().equals("host")) && !(TextFieldRoot.getText().equals("root"))){
+        String Host2Root = TextFieldHost.getText() + " / " + TextFieldRoot.getText();
+        if(Settings.getRoot(TextFieldHost.getText()) == null){
+            ListMultihoming.add(Host2Root);
+            Settings.addHost(TextFieldHost.getText(), TextFieldRoot.getText());
+            
+            String[] sta = ListMultihoming.getItems();
+            Host2RootFile.writeFile(sta);
+        } else{
+            
+        }
+    } else{
+        
+    }
+}//GEN-LAST:event_ButtonAddMouseClicked
 /**
  * @param java.awt.Textfield (eine Textbox)
  * @return void
@@ -527,22 +575,27 @@ private String[] SubstringHostRoot(String aString){
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddNewHost2Root;
-    private javax.swing.JButton DeleteHost2Root;
-    private javax.swing.JLabel Host2RootLabel;
-    private java.awt.List Host2RootList;
-    private java.awt.TextField HostText;
-    private java.awt.Label Information;
-    private javax.swing.JLabel PortLabel;
-    private java.awt.TextField PortText;
-    private java.awt.Label Portinformation;
-    private java.awt.TextField RootText;
-    private javax.swing.JButton RunServer;
-    private javax.swing.JButton SetPort;
-    private javax.swing.JButton StopServer;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private java.awt.Label status;
+    private javax.swing.JButton ButtonAdd;
+    private javax.swing.JButton ButtonDeleteMultihoming;
+    private javax.swing.JButton ButtonRun;
+    private javax.swing.JButton ButtonSet;
+    private javax.swing.JButton ButtonStop;
+    
+    private javax.swing.JLabel LabelDefault;
+    private javax.swing.JLabel LabelHost;
+    private javax.swing.JLabel LabelMessages;
+    private javax.swing.JLabel LabelMultihoming;
+    private javax.swing.JLabel LabelPort;
+    private javax.swing.JLabel LabelRoot;
+    private java.awt.Label LabelStatus;
+    private java.awt.List ListMessages;
+    private java.awt.List ListMultihoming;
+    private javax.swing.JPanel PanelAll;
+    private javax.swing.JPanel PanelMultihoming;
+    
+    private java.awt.TextField TextFieldHost;
+    private java.awt.TextField TextFieldPort;
+    private java.awt.TextField TextFieldRoot;
     // End of variables declaration//GEN-END:variables
     
 }

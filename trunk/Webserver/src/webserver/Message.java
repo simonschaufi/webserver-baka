@@ -28,14 +28,16 @@ public class Message
     OutputStream out;
     File file2get;
     String filePath;
+    Interface gui;
 
-    public Message(ClientRequest request, OutputStream out) throws ClientException
+    public Message(ClientRequest request, OutputStream out, Interface i) throws ClientException
     {
+        this.gui = i;
         this.request = request;
         this.out = out;
         String path = request.getFilePath().replace("%20", " ");
         file2get = new File(path);
-        System.out.println("deine mudda: " + file2get.getPath());
+        gui.printMessages("Root: " + file2get.getPath());
     }
 
     public void replyRequest(boolean isGetRequest) throws ClientException
@@ -48,7 +50,7 @@ public class Message
                 if (!file2get.isDirectory())
                 {
                     checkModifiedStates();
-                    new ReplyHeaderGET(out, file2get, request).generateResponse();
+                    new ReplyHeaderGET(out, file2get, request, gui ).generateResponse();
                     if (isGetRequest)
                         sendFile();
                 }
@@ -80,7 +82,7 @@ public class Message
         }
         catch (IOException e)
         {
-            System.out.println("Fehler beim Schreiben der Post-Datei: " + e.getMessage());
+            gui.printMessages("Fehler beim Schreiben der Post-Datei: " + e.getMessage());
         }
 
     }
@@ -135,7 +137,7 @@ public class Message
         }
         catch (IOException e)
         {
-            System.out.println("Das Senden der Datei schlug fehl: " + e.getMessage());
+            gui.printMessages("Das Senden der Datei schlug fehl: " + e.getMessage());
         }
     }
 
@@ -279,7 +281,7 @@ public class Message
         }
         catch (IOException e)
         {
-            System.out.println("100 Continue Fehler");
+            gui.printMessages("100 Continue Fehler");
         }
     }
 }
