@@ -20,9 +20,15 @@ public class Interface extends javax.swing.JFrame {
     /** Creates new form Interface */
     Server s = null;
     
+    /**
+     * Ausgabefunktion für Messages im Gui, sowie Fokus setzten auf das zuletzt
+     * geschriebenen Element.
+     * @param message Nachricht die Ausgegeben werden soll
+     */
     public void printMessages(String message)
     {
         this.ListMessages.add(message);
+        this.ListMessages.makeVisible(this.ListMessages.getItemCount()-1);
     }
     
     public Interface() {
@@ -332,7 +338,7 @@ public class Interface extends javax.swing.JFrame {
        s.closeServer();
        s = null;
        LabelStatus.setText("stopped");
-        LabelStatus.setFont(new Font("",Font.PLAIN,12));
+        LabelStatus.setFont(new Font("",Font.BOLD,12));
         LabelStatus.setForeground(Color.RED);
    }
 }//GEN-LAST:event_ButtonStopMouseClicked
@@ -348,8 +354,10 @@ private void ButtonRunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
         s = new Server(this);
         s.start();
         LabelStatus.setText("running");
-        LabelStatus.setFont(new Font("",Font.PLAIN,12));
-        LabelStatus.setForeground(Color.GREEN);
+        LabelStatus.setFont(new Font("",Font.BOLD,12));
+        LabelStatus.setForeground(Color.BLUE);
+        printMessages("Server wurde auf Port " + s.socket.getLocalPort() + " gestartet...");
+        printMessages(" ");
     }
 
 }//GEN-LAST:event_ButtonRunMouseClicked
@@ -367,11 +375,11 @@ private void WindowStartet(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_Wi
  */
 private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
     
-        String[] Host2RootListArray = Host2RootFile.readFile();     
+        String[] MultihomingArray = MultihomingToFile.getFileContent();     
         int i = 0;
-        while(Host2RootListArray[i] != null){
-            ListMultihoming.add(Host2RootListArray[i]);
-            String[] HostAndRoot = SubstringHostRoot(Host2RootListArray[i]);
+        while(MultihomingArray[i] != null){
+            ListMultihoming.add(MultihomingArray[i]);
+            String[] HostAndRoot = SubstringHostRoot(MultihomingArray[i]);
             Settings.addHost(HostAndRoot[0], HostAndRoot[1]);
             i++;
         }
@@ -432,7 +440,7 @@ private void ButtonDeleteMultihoming_Click(java.awt.event.MouseEvent evt) {//GEN
         Settings.deleteHost(st.nextToken());
         ListMultihoming.remove(ListMultihoming.getSelectedIndex());
         String[] sta = ListMultihoming.getItems();
-        Host2RootFile.writeFile(sta);
+        MultihomingToFile.setFileContent(sta);
     }   
 }//GEN-LAST:event_ButtonDeleteMultihoming_Click
 /**
@@ -508,7 +516,7 @@ private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             Settings.addHost(TextFieldHost.getText(), TextFieldRoot.getText());
             
             String[] sta = ListMultihoming.getItems();
-            Host2RootFile.writeFile(sta);
+            MultihomingToFile.setFileContent(sta);
         } else{
             
         }
@@ -547,21 +555,21 @@ private void CheckText(java.awt.TextField aTextField,String aName){
  * @return StringArray mit 2 Einträgen
  * Gibt einen Array mit 2 String Einträgen zurück (Host und Root)
  */
-private String[] SubstringHostRoot(String aString){
-    char aStringArray[] = aString.toCharArray();
-    String[] HostAndRootSeperated = new String[2];
+private String[] SubstringHostRoot(String s){
+    char stringAsChar[] = s.toCharArray();
+    String[] HostAndRoot = new String[2];
     String Host = "";
     String Root = "";
-    int Position = aString.indexOf(" / ");
+    int Position = s.indexOf(" / ");
     for(int i = 0; i <= Position - 1; i++){
-        Host += aStringArray[i];            
+        Host += stringAsChar[i];            
     }
-    for(int j = Position + 3; j < aString.length(); j++){
-        Root += aStringArray[j];
+    for(int j = Position + 3; j < s.length(); j++){
+        Root += stringAsChar[j];
     }
-    HostAndRootSeperated[0] = Host;
-    HostAndRootSeperated[1] = Root;
-    return HostAndRootSeperated;
+    HostAndRoot[0] = Host;
+    HostAndRoot[1] = Root;
+    return HostAndRoot;
 }
     /**
      * @param args the command line arguments

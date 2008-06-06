@@ -9,6 +9,7 @@
 package webserver;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,7 +26,7 @@ public class Message
 
     /** Creates a new instance of Message */
     ClientRequest request;
-    OutputStream out;
+    OutputStream output;
     File file2get;
     String filePath;
     Interface gui;
@@ -34,12 +35,29 @@ public class Message
     {
         this.gui = i;
         this.request = request;
-        this.out = out;
+        this.output = out;
         String path = request.getFilePath().replace("%20", " ");
         file2get = new File(path);
         gui.printMessages("Root: " + file2get.getPath());
     }
 
+    /**
+     *  Liest die angeforderte Datei ein und Wandelt sie in ByteCode um damit diese
+     * verschickt werden kann
+     *  @param filePath Dateiname + Pfad der angefordert wird
+     *  @return Eingelesenes File als Byte array
+     *  @throws IOException falls das lesen der Datei fehlschlägt
+     */
+    static public byte[] getFile(String filePath) throws IOException
+    {
+            File file2get = new File(filePath);
+            byte[] dateiInByte = new byte[(int) file2get.length()];
+            FileInputStream inputStream = new FileInputStream(file2get);
+            inputStream.read(dateiInByte);
+            return dateiInByte;
+    }
+        
+    
     public void replyRequest(boolean isGetRequest) throws ClientException
     {
 
@@ -50,24 +68,24 @@ public class Message
                 if (!file2get.isDirectory())
                 {
                     checkModifiedStates();
-                    new ReplyHeaderGET(out, file2get, request, gui ).generateResponse();
+                    new ReplyHeaderGET(output, file2get, request, gui  ).generateResponse();
                     if (isGetRequest)
                         sendFile();
                 }
                 else
                     if (file2get.isDirectory())
                     {
-                        throw new ClientException(RFC2616.HTTP_STATUS_302);
+                        throw new ClientException("302 Found");
                     }
             }
             else
             {
-                throw new ClientException(RFC2616.HTTP_STATUS_403);
+                throw new ClientException("403 Forbidden");
             }
         }
         else
         {
-            throw new ClientException(RFC2616.HTTP_STATUS_404);
+            throw new ClientException("404 Not Found");
         }
     }
 
@@ -93,7 +111,7 @@ public class Message
         {
             ArrayList<Byte> lineBuffer = new ArrayList<Byte>();
             String path = request.getFilePath().replace("%20", " ");
-            byte[] file = Cache.getFile(path);
+            byte[] file = getFile(path);
             int fileLength = file.length;
 
             if (Settings.chunked && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0")))
@@ -106,32 +124,32 @@ public class Message
 
                     if (i % (Settings.chunk_size) == 0 && i > 0)
                     {
-                        out.write(Integer.toHexString(Settings.chunk_size).getBytes());
-                        out.write(RFC2616.CRLF.getBytes());
-                        out.write(chunk);
-                        out.write(RFC2616.CRLF.getBytes());
+                        output.write(Integer.toHexString(Settings.chunk_size).getBytes());
+                        output.write(("\r\n").getBytes());
+                        output.write(chunk);
+                        output.write(("\r\n").getBytes());
                     }
                     chunk[i % (Settings.chunk_size)] = file[i];
                 }
 
-                out.write(Integer.toHexString((i % Settings.chunk_size)).getBytes());
-                out.write(RFC2616.CRLF.getBytes());
+                output.write(Integer.toHexString((i % Settings.chunk_size)).getBytes());
+                output.write(("\r\n").getBytes());
 
                 for (int j = 0; j < (i % Settings.chunk_size); j++)
                 {
-                    out.write(chunk[j]);
+                    output.write(chunk[j]);
                 }
 
-                out.write(RFC2616.CRLF.getBytes());
-                out.write(Integer.toHexString(0).getBytes());
-                out.write(RFC2616.CRLF.getBytes());
-                out.write(RFC2616.CRLF.getBytes());
+                output.write(("\r\n").getBytes());
+                output.write(Integer.toHexString(0).getBytes());
+                output.write(("\r\n").getBytes());
+                output.write(("\r\n").getBytes());
             }
             else
             {
-                out.write(file);
-                out.write(RFC2616.CRLF.getBytes());
-                out.flush();
+                output.write(file);
+                output.write(("\r\n").getBytes());
+                output.flush();
             }
 
         }
@@ -267,7 +285,7 @@ public class Message
             for (int ik = 0; ik <= 5; ik++)
             {
                 if (DateFromFile[ik] != DateFromClient[ik])
-                    throw new ClientException(RFC2616.HTTP_STATUS_412);
+                    throw new ClientException("412 Precondition Failed");
             }
         }
     }
@@ -276,8 +294,8 @@ public class Message
     {
         try
         {
-            String con = "HTTP/1.1 100 Continue" + RFC2616.CRLF + RFC2616.CRLF;
-            out.write(con.getBytes());
+            String con = "HTTP/1.1 100 Continue" + ("\r\n") + ("\r\n");
+            output.write(con.getBytes());
         }
         catch (IOException e)
         {

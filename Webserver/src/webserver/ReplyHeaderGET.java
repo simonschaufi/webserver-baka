@@ -18,7 +18,7 @@ import javax.activation.MimetypesFileTypeMap;
  *
  * @author fabian
  */
-public class ReplyHeaderGET extends ReplyHeader{
+public class ReplyHeaderGET extends CreateResponse{
    
     File file2get;
     String keepAlive;
@@ -45,7 +45,7 @@ public class ReplyHeaderGET extends ReplyHeader{
      * @return void
      */
     public void generateResponse(){
-        addLine(getHttpVersion()+" "+RFC2616.HTTP_STATUS_200);
+        addLine(getHttpVersion()+" 200 OK");
         addDate();
         checkKeepAlive();
         checkChunked();

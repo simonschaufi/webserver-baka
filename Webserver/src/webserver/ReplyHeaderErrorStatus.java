@@ -1,10 +1,5 @@
 /*
- * ReplyHeaderErrorStatus.java
- * 
- * Created on 22.06.2007, 12:01:11
- * 
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ * ReplyHeaderErrorStatus.java.
  */
 package webserver;
 
@@ -13,9 +8,9 @@ import java.io.OutputStream;
 
 /**
  *
- * @author fabian
+ *
  */
-public class ReplyHeaderErrorStatus extends ReplyHeader
+public class ReplyHeaderErrorStatus extends CreateResponse
 {
 
     String errorHeader;
@@ -33,7 +28,7 @@ public class ReplyHeaderErrorStatus extends ReplyHeader
     
     void setPath(String path)
     {
-        gui.printMessages("Bla: " + path);
+        gui.printMessages("Path: " + path);
         this.Path = path;
     }
     
@@ -48,7 +43,7 @@ public class ReplyHeaderErrorStatus extends ReplyHeader
             addDate();
             checkKeepAlive();
             addLine("Location: " + this.Path + "index.html");
-            addLine(RFC2616.CRLF);
+            addLine("\r\n");
             sendHeader();
         }
         else
@@ -61,9 +56,9 @@ public class ReplyHeaderErrorStatus extends ReplyHeader
             sendHeader();
             try
             {
-                out.write(generateErrorPage(errorHeader).getBytes());
-                out.write(RFC2616.CRLF.getBytes());
-                out.flush();
+                output.write(generateErrorPage(errorHeader).getBytes());
+                output.write(("\r\n").getBytes());
+                output.flush();
             }
             catch (IOException e)
             {
@@ -90,6 +85,6 @@ public class ReplyHeaderErrorStatus extends ReplyHeader
                 "                                                                                                                                                                                                                                       " +
                 "                                                                                                                                                                                                                                       \n" +
                 " </body>\n" +
-                "</html>" + RFC2616.CRLF;
+                "</html>\r\n";
     }
 }

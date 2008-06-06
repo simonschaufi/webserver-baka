@@ -95,7 +95,7 @@ public class Connection extends Thread{
             else if(kindOfMessage.equals("POST"))
             {              
                 theMessage.writePostToFile(request.getPostContent()); 
-                new ReplySimpleSatus(out, request, RFC2616.HTTP_STATUS_204, gui).generateResponse();
+                new ReplySimpleSatus(out, request, "204 No Content", gui).generateResponse();
             }
             else if(kindOfMessage.equals("HEAD"))
             {
@@ -103,10 +103,10 @@ public class Connection extends Thread{
             }
             else if(kindOfMessage.equals("PUT") || kindOfMessage.equals("DELETE") || kindOfMessage.equals("OPTIONS")
                     || kindOfMessage.equals("TRACE")){
-                throw new ClientException(RFC2616.HTTP_STATUS_501);
+                throw new ClientException("501 Not Implemented");
             }       
             else
-                throw new ClientException(RFC2616.HTTP_STATUS_400);
+                throw new ClientException("400 Bad Request");
                 
         }
         catch(IOException e)
