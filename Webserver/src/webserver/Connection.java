@@ -112,7 +112,9 @@ public class Connection extends Thread{
         }
         catch(ClientException e){
             System.out.println("Fehler: "+e.getMessage());
-            new ReplyHeaderErrorStatus(out,e.getMessage(),request).generateResponse();
+            ReplyHeaderErrorStatus rhes = new ReplyHeaderErrorStatus(out,e.getMessage(),request);
+            rhes.setPath(request.getPath());
+            rhes.generateResponse();
         }    
     }    
 }
