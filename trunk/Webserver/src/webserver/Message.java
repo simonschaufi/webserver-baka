@@ -68,7 +68,7 @@ public class Message
                 if (!file2get.isDirectory())
                 {
                     checkModifiedStates();
-                    new ReplyHeaderGET(output, file2get, request, gui  ).generateResponse();
+                    new CreateResponse(output, file2get, request, gui  ).generateResponse("GET");
                     if (isGetRequest)
                         sendFile();
                 }

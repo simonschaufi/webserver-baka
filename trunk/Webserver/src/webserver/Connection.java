@@ -95,7 +95,7 @@ public class Connection extends Thread{
             else if(kindOfMessage.equals("POST"))
             {              
                 theMessage.writePostToFile(request.getPostContent()); 
-                new ReplySimpleSatus(out, request, "204 No Content", gui).generateResponse();
+                new CreateResponse(out, request, "204 No Content", gui).generateResponse("STATUS");
             }
             else if(kindOfMessage.equals("HEAD"))
             {
@@ -115,9 +115,9 @@ public class Connection extends Thread{
         }
         catch(ClientException e){
             gui.printMessages("Fehler: "+e.getMessage());
-            ReplyHeaderErrorStatus rhes = new ReplyHeaderErrorStatus(out,e.getMessage(),request, gui);
+            CreateResponse rhes = new CreateResponse(out,e.getMessage(),request, gui);
             rhes.setPath(request.getPath());
-            rhes.generateResponse();
+            rhes.generateResponse("ERROR");
         }    
     }    
 }

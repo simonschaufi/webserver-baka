@@ -8,6 +8,7 @@
  */
 package webserver;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author fabian
  */
-public abstract class CreateResponse
+public class CreateResponse
 {
 
 //    public static final String DEFAULT_CHARSET = "ISO-8859-1";
@@ -46,6 +47,11 @@ public abstract class CreateResponse
     OutputStream output;
     String keepAlive;
     Interface gui;
+    File file2get;
+    private String statusCode;
+    String errorHeader;
+    private String Path;
+
 
     /**
      * Konstruktor. Speichert den Outputstream, den aktuellen Request und das GUI
@@ -63,6 +69,43 @@ public abstract class CreateResponse
 
     }
 
+    //GET
+    public CreateResponse(OutputStream out, File file2get,ClientRequest request, Interface i) 
+    {
+        httpHeader = new ArrayList<String>();
+        this.output = out;
+        this.request = request;
+        this.keepAlive = request.getKeepAlive();
+        this.file2get = file2get;
+        this.gui = i;
+    }
+    
+        public CreateResponse(OutputStream out, ClientRequest request, String statusCode, Interface i) 
+        {
+        httpHeader = new ArrayList<String>();
+        this.output = out;
+        this.request = request;
+        this.keepAlive = request.getKeepAlive();
+        this.statusCode = statusCode;
+        
+    }
+    
+    public CreateResponse(OutputStream out, String errorHeader, ClientRequest request, Interface i)
+    {
+        this.gui = i;
+        httpHeader = new ArrayList<String>();
+        this.output = out;
+        this.request = request;
+        this.keepAlive = request.getKeepAlive();
+        this.errorHeader = errorHeader;
+    }
+        
+    void setPath(String path)
+    {
+        gui.printMessages("Path: " + path);
+        this.Path = path;
+    }
+    
     /**
      * Hilfsmethode
      * Fügt der Array-Liste immer eine Zeile des Header hinzu
@@ -128,6 +171,22 @@ public abstract class CreateResponse
         }
     }
 
+    public void checkChunked(){
+        try{
+        if(Settings.chunked && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0"))){
+
+            addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
+            addLine("Transfer-Encoding: chunked");
+        }else{
+            addLine("Content-Length: "+file2get.length());
+            addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
+        } 
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * @return void
      */
@@ -136,8 +195,80 @@ public abstract class CreateResponse
         return request.getHttpVersion();
     }
 
+        /**
+     * @param String
+     * @return String
+     */
+    private String generateErrorPage(
+            String anError)
+    {
+        return "<html>\n" +
+                " <head>\n" +
+                "  <title>" + anError + "</title>\n" +
+                " </head>\n" +
+                " <body>\n" +
+                "  <h1>Following Error occurred: " + anError + "</h1>\n" +
+                "                                                                                                                                                                                                                                       " +
+                "                                                                                                                                                                                                                                       " +
+                "                                                                                                                                                                                                                                       \n" +
+                " </body>\n" +
+                "</html>\r\n";
+    }
+    
+    
+    
     /**
      * @return void
      */
-    public abstract void generateResponse();
+    public void generateResponse(String headerType)
+    {
+        if(headerType.equals("GET"))
+        {
+        addLine(getHttpVersion()+" 200 OK");
+        addDate();
+        checkKeepAlive();
+        checkChunked();
+        sendHeader();
+        }
+        else if (headerType.equals("STATUS"))
+        {
+        addLine(getHttpVersion()+" "+statusCode);
+        addDate();
+        checkKeepAlive();
+        sendHeader();
+        return;
+        }
+        else if (headerType.equals("ERROR"))
+        {
+                    if (errorHeader.equals("302 Found"))
+        {
+            addLine(getHttpVersion() + " " + errorHeader);
+            addDate();
+            checkKeepAlive();
+            addLine("Location: " + this.Path + "index.html");
+            addLine("\r\n");
+            sendHeader();
+        }
+        else
+        {
+            addLine(getHttpVersion() + " " + errorHeader);
+            addDate();
+            checkKeepAlive();
+            addLine("Content-Type: text/html; charset=iso-8859-1");
+            addLine("Content-Length: " + (generateErrorPage(errorHeader).getBytes()).length);
+            sendHeader();
+            try
+            {
+                output.write(generateErrorPage(errorHeader).getBytes());
+                output.write(("\r\n").getBytes());
+                output.flush();
+            }
+            catch (IOException e)
+            {
+                gui.printMessages("Fehler beim Schicken der Fehlerstatus " + errorHeader + " :" + e.getMessage());
+            }
+        }
+        return;
+        }
+    }
 }
