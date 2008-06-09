@@ -1,9 +1,3 @@
-/*
- * Interface.java
- *
- * Created on 20. Juni 2007, 10:45
- */
-
 package webserver;
 
 import java.awt.*;
@@ -11,14 +5,13 @@ import java.util.StringTokenizer;
 import java.io.*;
 
 /**
- *
- * @author  skolbens
+ * @author  Simon Schaufelberger
  * Diese Klasse bildet die Oberfläche
  */
 public class Interface extends javax.swing.JFrame {
     
     /** Creates new form Interface */
-    Server s = null;
+    Server server = null;
     
     /**
      * Ausgabefunktion für Messages im Gui, sowie Fokus setzten auf das zuletzt
@@ -32,7 +25,9 @@ public class Interface extends javax.swing.JFrame {
     }
     
     public Interface() {
-        super("MSP Webserver -- yeah!");
+    	//Ruft den Konstruktor der Klasse JFrame auf 
+        super("MSP Webserver 2008");
+        //initialisiert Variablen
         initComponents();
     }
     
@@ -111,10 +106,6 @@ public class Interface extends javax.swing.JFrame {
                 TextFieldPort_FocusLost(evt);
             }
         });
-
-
-
-        
 
         ButtonRun.setText("run server");
         ButtonRun.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -325,6 +316,7 @@ public class Interface extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
 /**
  * @param Mausevent
  * @return void
@@ -342,6 +334,7 @@ public class Interface extends javax.swing.JFrame {
         LabelStatus.setForeground(Color.RED);
    }
 }//GEN-LAST:event_ButtonStopMouseClicked
+
 /**
  * @param Mausevent
  * @return void
@@ -361,6 +354,7 @@ private void ButtonRunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
     }
 
 }//GEN-LAST:event_ButtonRunMouseClicked
+
 /**
  * Methode wird nicht mehr verwendet
  */
@@ -385,12 +379,14 @@ private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event
         }
     
 }//GEN-LAST:event_formWindowOpened
+
 /**
  * Methode wird nicht länger benötigt
  */
 private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
     // TODO add your handling code here:
 }//GEN-LAST:event_formWindowStateChanged
+
 /**
  * @param MausEvent
  * @return void
@@ -417,16 +413,9 @@ private void ButtonSet_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_B
         if(check == true)
         {
             Settings.port = Integer.parseInt(TextFieldPort.getText());
-
-        }
-        else{
-
         }
     }
-    else
-    {
-                
-    }
+
 }//GEN-LAST:event_ButtonSet_Click
 /**
  * @param Mausevent
@@ -470,7 +459,7 @@ private void TextFieldRoot_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
  * @param FocusEvent
  * @return void
  * Mehtode wird aufgerufen wen die PortText_Textbox den Focus erhält
- * PortText_FocusLost fur die CheckText Methode auf
+ * PortText_FocusLost fuer die CheckText Methode auf
  */
 private void TextFieldPort_FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TextFieldPort_FocusLost
     CheckText(TextFieldPort,"standard port 80 is set");
@@ -517,13 +506,10 @@ private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
             
             String[] sta = ListMultihoming.getItems();
             MultihomingToFile.setFileContent(sta);
-        } else{
-            
         }
-    } else{
-        
     }
 }//GEN-LAST:event_ButtonAddMouseClicked
+
 /**
  * @param java.awt.Textfield (eine Textbox)
  * @return void
@@ -541,14 +527,13 @@ private void ChangeSettingsOfTextbox(java.awt.TextField aTextField){
  * Dies Methode wird von den ...TextLostFocus Mehtoden aufgerufen
  * CheckText überprüft den String in dem übergebenen Textfeld und ändert ihn bei bestimmten Bedinungen
  */
-private void CheckText(java.awt.TextField aTextField,String aName){
+private void CheckText(java.awt.TextField aTextField, String aName){
     if(aTextField.getText().equals("") ){
         aTextField.setText(aName);
         aTextField.setFont(new Font("",Font.ITALIC,12));
         Color C = new Color(204, 204, 255, 0);
         aTextField.setForeground(C);
     }
-    else{}
 }
 /**
  * @param String
@@ -557,23 +542,23 @@ private void CheckText(java.awt.TextField aTextField,String aName){
  */
 private String[] SubstringHostRoot(String s){
     char stringAsChar[] = s.toCharArray();
-    String[] HostAndRoot = new String[2];
-    String Host = "";
-    String Root = "";
+    String[] hostAndRoot = new String[2];
+    String host = "";
+    String root = "";
     int Position = s.indexOf(" / ");
     for(int i = 0; i <= Position - 1; i++){
-        Host += stringAsChar[i];            
+        host += stringAsChar[i];            
     }
     for(int j = Position + 3; j < s.length(); j++){
-        Root += stringAsChar[j];
+        root += stringAsChar[j];
     }
-    HostAndRoot[0] = Host;
-    HostAndRoot[1] = Root;
-    return HostAndRoot;
+    hostAndRoot[0] = host;
+    hostAndRoot[1] = root;
+    return hostAndRoot;
 }
     /**
      * @param args the command line arguments
-*/
+	 */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

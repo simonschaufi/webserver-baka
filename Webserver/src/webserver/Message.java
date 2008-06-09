@@ -133,8 +133,9 @@ public class Message
             {
 				//Mache kleine Byte-stuecke
                 byte[] chunk = new byte[Settings.chunk_size];
+                int i = 0;
                 
-                for (int i = 0; i < fileLength; i++)
+                for (i = 0; i < fileLength; i++)
                 {
 					//Sobald die chunk_size (oder ein Vielfaches davon) erreicht ist mach wieder ein neues Packet
                     if (i % (Settings.chunk_size) == 0 && i > 0)
@@ -317,8 +318,8 @@ public class Message
     {
         try
         {
-            String continue = "HTTP/1.1 100 Continue\r\n\r\n");
-            outputStream.write(continue.getBytes());
+            String stringContinue = "HTTP/1.1 100 Continue\r\n\r\n");
+            outputStream.write(stringContinue.getBytes());
         }
         catch (IOException ioEx)
         {
