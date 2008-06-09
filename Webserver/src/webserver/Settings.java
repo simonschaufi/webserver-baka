@@ -22,18 +22,20 @@ import java.util.TimeZone;
  */
 public class Settings {
     /** Verwendeter Port des WebServer */
-    public static int port = 80;
+//    public static int port = 80;
     /** Größe des verwendeten Sende-Puffers */
-    public static int bufferSize = 500;
+    //public static int bufferSize = 500;
     /** Gibt an ob der WebServer seine Daten nach RFC2616(HTTP_1.1) "Chunked" versendet */
     public static boolean chunked = true;
     /** Gibt die Größe eines sog. Chunks an */
     public static int chunk_size = 20;
     /** Gibt an ob 100Continue nach RFC2616 verwendet wird oder nicht */
     public static boolean use100Continue = false;
+    
     /** HashMap zum Speichern der Hosts. Wird für MultiHoming benötigt */
     private static HashMap hosts = new HashMap();
    /** Gibt den Speicherplatz der POST-Request an. Diese werden in der entsprechenden *.txt Datei gespeichert */
+    
     public static File postFile = new File("c:\\a\\post.txt");
     /** Einfaches Datumsformat zum Formatieren der Datumsausgabe in den HTTP-Headern */
     public static SimpleDateFormat theTime=null;
@@ -58,6 +60,7 @@ public class Settings {
     {
         return (String)hosts.get(host);
     }
+    
     /**
      * Löschen eines Host aus der Hosting-Liste
      * @param host Der entsprechende Host
@@ -69,7 +72,7 @@ public class Settings {
      * Ermitteln des aktuellen Zeitstempels für die Reply-Header
      * @return Den aktuellen Zeitstempel, formatiert nach Vorgabe
     */
-    public static String getTheTime(){
+    public static String getDate(){
         if(theTime==null){
             theTime = new java.text.SimpleDateFormat( "E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
             theTime.setTimeZone(TimeZone.getTimeZone("GMT"));

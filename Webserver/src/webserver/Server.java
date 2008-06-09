@@ -1,96 +1,110 @@
 /*
  * Server.java
- *
- * Created on 19. Juni 2007, 10:36
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 package webserver;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 /**
  *
- * @author schwendemann.sebasti
+ * @author Andreas Paul
+ * 
+ * Diese Klasse virtualisiert den Webserver
+ * 
+ * Sie ist für die Verwaltung (Öffnen, Schliessen, Fehlerabfangen) der Sockets zuständig
+ * Ausserdem Erstellt diese Klasse Objekte der Klasse 'Connection' und führt ihre 'run'-Methode aus
  */
-public class Server extends Thread
-{
+public class Server extends Thread {
 
-    public ServerSocket socket;
-    Connection con;
-    Boolean run = true;
-    Interface gui =null;
+    public ServerSocket sSocket; //Deklaration des zu öffnenden Sockets
+    Connection aConnection; //Die Connection die später geöffnet wird
+    Boolean bRun = true; //Die Variable die 'true' gesetzt wird beim Starten und auf 'false' beim Beenden des Webserver über das GUI
+    Interface intfGui = null; //Das hier verwendete GUI für die Methode 'printMessages'
+    static int port = 80;
 
-    /** Creates a new instance of Server */
-    public Server(Interface i)
-    {
-        this.gui = i;
-        try
-        {
-            socket = new ServerSocket(Settings.port);
+    public Server(Interface intf) {
 
-        }
-        catch (IOException e)
-        {
-            gui.printMessages("Fehler beim Erstellen des Socket: " + e.getMessage());
+        this.intfGui = intf; //Zuweisung des verwendeten GUIs
+
+        try {
+            sSocket = new ServerSocket(port); //Erstellen des Sockets
+
+        } catch (IOException ex) { //Ggf. Fehlermeldung beim Öffnen des Sockets abfangen
+
+            intfGui.printMessages("Fehler beim Erstellen des Socket: " + ex.getMessage());
         }
 
     }
 
-    /**
-     * @return void
-     */
-    public void run()
-    {
-        while (run)
-        {
-            try
-            {
-                con = new Connection(socket.accept(), gui);
-                if (con != null)
-                    con.start();
+    @Override
+    public void run() { //Die 'run'-Methode der 'Server'-Klasse
 
+        while (bRun) { /* <<<---
+             * Solange der Webserver vom Benutzer durch den Button in 'Interface' gestartet wurde
+             * Kann durch den Stopbutton in 'Interface' der die 'Server'-Methode 'closeServer' aufruft gestoppt werden
+             */
+            try {
+                aConnection = new Connection(sSocket.accept(), intfGui);
+
+                /* ^^^^
+                 * Öffnen des Sockets und übergabe des GUIs
+                 * an die 'Connection'-Klasse für Methode 'printMessages'
+                 */
+
+                if (aConnection != null) {
+
+                    /*^^^^
+                     * Wenn die Connection erfolgreich geöffnet,
+                     *  starte die 'run' Methode in der Klasse 'Connection'
+                     */
+
+                    aConnection.start(); //Starten der 'run' Methode in der Klasse 'Connection'
+                }
+
+            } catch (IOException ex) { //Abfangen der möglichen Fehler
+                if (ex.getMessage().equals("socket closed")) {
+                    intfGui.printMessages("Der Server-Socket wurde geschlossen!");
+
+                } else {
+                    intfGui.printMessages("Fehler beim Oeffnen des Client-Socket: " + ex.getMessage() + "!");
+                }
+            } catch (NullPointerException ex) {
+
+                intfGui.printMessages("Fehler!!! Port 80 wird bereits verwendet: " + ex.toString() + "!");
+                bRun = false;
             }
-            catch (IOException e)
-            {
-                if (e.getMessage().equals("socket closed"))
-                    gui.printMessages("Der Server-Socket wurde geschlossen");
-                else
-                    gui.printMessages("Fehler beim Oeffnen des Client-Socket: " + e.getMessage());
-            }
-            catch (NullPointerException e)
-            {
-                gui.printMessages("Fehler, Port 80 wird bereits benutzt: " + e.toString());
-                run = false;
-            }
-        }
-        try
-        {
-            socket.close();
-        }
-        catch (IOException e)
-        {
-            gui.printMessages("Fehler beim Schließen des Sockets: " + e.getMessage());
+
+        } //#### Hier endet die while(bRun)-Schleife ####
+
+
+        try {
+            sSocket.close();
+        /* ^^^^
+         * Da 'bRun' jetzt false aufgrund des Aufrufes
+         * der 'closeServer'-Methode von 'Server' durch den Stopknopf
+         */
+
+        } catch (IOException ex) {
+            intfGui.printMessages("Fehler beim Schließen des Sockets: " + ex.getMessage() + "!");
         }
 
-        gui.printMessages("Server wird beendet");
+        intfGui.printMessages("Server wird beendet!");
     }
 
-    /**
-     * @return void
-     */
-    public void closeServer()
-    {
-        try
-        {
-            run = false;
-            socket.close();
-        }
-        catch (IOException e)
-        {
-            gui.printMessages("Fehler beim Schließen des Sockets: " + e.getMessage());
+    public void closeServer() {
+        /* ^^^^
+         * Wird von der Methode 'ButtonStopMouseClicked' der Klasse 'Interface'
+         * aufgerufen und beendet die while(bRun)-Schleife in der 'Server'-Methode 'run'
+         */
+        try {
+
+            bRun = false; // while(bRun)-Schleife stoppen
+            sSocket.close(); //Den Socket schliessen
+
+        } catch (IOException ex) { //Fehlerabfangen
+
+            intfGui.printMessages("Fehler beim Schließen des Sockets: " + ex.getMessage() + "!");
         }
     }
 }

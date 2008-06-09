@@ -35,10 +35,8 @@ public class MultihomingToFile
      */
     public static String[] getFileContent()
     {
-
-
-        String[] txtAll = new String[100];
-        String txtLine = null;
+        String[] completeText = new String[100];
+        String singleLine = null;
         try
         {
             //FileReader soll aus Multihoming.txt lesen
@@ -52,23 +50,22 @@ public class MultihomingToFile
             //Zeile im array Speichern
             do
             {
-                txtLine = bufferedreader.readLine();
-                if (txtLine != null)
+                singleLine = bufferedreader.readLine();
+                if (singleLine != null)
                 {
-                    txtAll[i] = txtLine;
+                    completeText[i] = singleLine;
                     i++;
                 }
-            } while (txtLine != null);
+            } while (singleLine != null);
         }
         catch (IOException e)
         {
         }
-        return txtAll;
+        return completeText;
     }
 
     /**
-     * 
-     * Schreibt die Listenelement, übergeben als Array in die Multihoming.txt
+     * Schreibt die Listenelement, übergeben als Array, in die Multihoming.txt
      *  @param MultihomingListElements Array, in jedem Feld steht eine Zeile 
      * aus der AWT-List des GUIs
      */

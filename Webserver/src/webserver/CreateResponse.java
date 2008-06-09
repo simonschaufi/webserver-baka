@@ -19,39 +19,16 @@ import java.util.ArrayList;
  */
 public class CreateResponse
 {
-
-//    public static final String DEFAULT_CHARSET = "ISO-8859-1";
-//    public static final String EMPTY = "\r\n";
-//    public static final String CMD_QUIT = "QUIT";
-//    public static final String CMD_MIME = "MIME";
-//    public static final String CMD_CONFIG = "CONFIG";
-//    public static final String CONFIG_FILE = "jhttpd.conf";
-//    public static final String HTTP_METHOD_GET = "GET";
-//    public static final String HTTP_METHOD_HEAD = "HEAD";
-//    public static final String HTTP_METHOD_POST = "POST";
-//    public static final String PRODUCT_NAME = "jHTTP";
-//    public static final String PRODUCT_VERSION = "0.5";
-//    public static final String SIGNATURE = PRODUCT_NAME + " " + PRODUCT_VERSION + " HTTP 1.1 Server";
-//    public static final String HTTP_STATUS_200 = "200 OK";
-//    public static final String HTTP_STATUS_204 = "204 No Content";
-//    public static final String HTTP_STATUS_302 = "302 Found";
-//    public static final String HTTP_STATUS_400 = "400 Bad Request";
-//    public static final String HTTP_STATUS_403 = "403 Forbidden";
-//    public static final String HTTP_STATUS_404 = "404 Not Found";
-//    public static final String HTTP_STATUS_412 = "412 Precondition Failed";
-//    public static String HTTP_STATUS_304 = "304 Not Modified Date: " + Settings.getTheTime();
-//    public static final String HTTP_STATUS_501 = "501 Not Implemented";
-    
-    ClientRequest request;
+    Request clientRequest;
     ArrayList<String> httpHeader;
     OutputStream output;
-    String keepAlive;
+    String persistentConnection;
     Interface gui;
-    File file2get;
+    File fileToSend;
     private String statusCode;
     String errorHeader;
     private String Path;
-
+    String standardIndexPage = "index.html";
 
     /**
      * Konstruktor. Speichert den Outputstream, den aktuellen Request und das GUI
@@ -59,64 +36,59 @@ public class CreateResponse
      * @param OutputStream; ClientRequest
      * 
      */
-    public CreateResponse(OutputStream out, ClientRequest request, Interface i)
-    {
-        this.gui = i;
-        httpHeader = new ArrayList<String>();
-        this.output = out;
-        this.request = request;
-        this.keepAlive = request.getKeepAlive();
 
-    }
 
     //GET
-    public CreateResponse(OutputStream out, File file2get,ClientRequest request, Interface i) 
+    public CreateResponse(OutputStream out, File file2get, Request request, Interface i)
     {
         httpHeader = new ArrayList<String>();
         this.output = out;
-        this.request = request;
-        this.keepAlive = request.getKeepAlive();
-        this.file2get = file2get;
+        this.clientRequest = request;
+        this.persistentConnection = request.getPersistentConnection();
+        this.fileToSend = file2get;
         this.gui = i;
     }
-    
-        public CreateResponse(OutputStream out, ClientRequest request, String statusCode, Interface i) 
-        {
+
+    public CreateResponse(OutputStream out, Request request, String statusCode, Interface i)
+    {
         httpHeader = new ArrayList<String>();
         this.output = out;
-        this.request = request;
-        this.keepAlive = request.getKeepAlive();
+        this.clientRequest = request;
+        this.persistentConnection = request.getPersistentConnection();
         this.statusCode = statusCode;
-        
+
     }
-    
-    public CreateResponse(OutputStream out, String errorHeader, ClientRequest request, Interface i)
+
+    //ERROR
+    public CreateResponse(OutputStream out, String errorHeader, Request request, Interface i)
     {
         this.gui = i;
         httpHeader = new ArrayList<String>();
         this.output = out;
-        this.request = request;
-        this.keepAlive = request.getKeepAlive();
+        this.clientRequest = request;
+        this.persistentConnection = request.getPersistentConnection();
         this.errorHeader = errorHeader;
     }
-        
+
     void setPath(String path)
     {
         gui.printMessages("Path: " + path);
         this.Path = path;
     }
-    
+
     /**
      * Hilfsmethode
      * Fügt der Array-Liste immer eine Zeile des Header hinzu
+     * plus carriage Return Line Feed
      */
-    public void addLine(String text)
+    public void addHeaderInfo(String text)
     {
         httpHeader.add(text + "\r\n");
     }
 
     /**
-     * @return void
+     * Gibt den Generierten Header byteweise in den output Stream
+     * und gibt diesen zusätzlich im Message Fenster des GUI aus
      */
     public void sendHeader()
     {
@@ -125,7 +97,6 @@ public class CreateResponse
             for (int i = 0; i < httpHeader.size(); i++)
             {
                 output.write(httpHeader.get(i).getBytes());
-                System.out.write(httpHeader.get(i).getBytes());
                 gui.printMessages((httpHeader.get(i).toString()).trim());
             }
 
@@ -135,140 +106,156 @@ public class CreateResponse
         }
         catch (IOException e)
         {
-            gui.printMessages("Fehler beim Senden des Response-Headers: " + e.getMessage());
+            gui.printMessages("Senden des Response-Headers fehlgesschlagen!");
+            System.out.println(e.getMessage());
         }
 
     }
 
     /**
-     * @return void
-     * 
+     * Fügt die Zeile mit dem Datum in den Header ein
      */
     public void addDate()
     {
-        String line = "Date: " + Settings.getTheTime() + "\r\n";
-        httpHeader.add(line);
+        String date = "Date: " + Settings.getDate() + "\r\n";
+        httpHeader.add(date);
     }
 
     /**
-     * @return void
+     * Prüft ob eine PErsistente Verbindung erhalten werden soll, und setzt
+     * entsprechende Header-Einträge.
+     * Schließt die Persistente Verbindung bei bedarf auch wieder.
      */
-    public void checkKeepAlive()
+    public void checkForPersistentConnection()
     {
-        if (!(keepAlive.equalsIgnoreCase("")) && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0")))
+        if (!(persistentConnection.equalsIgnoreCase("")) && !(clientRequest.getVersion().equalsIgnoreCase("HTTP/1.0")))
         {
-            if (keepAlive.equals("Keep-Alive"))
+            if (persistentConnection.equals("Keep-Alive"))
             {
-                addLine("Connection: keep-alive");
-                addLine("Keep-Alive: timeout=3, max=100");
+                addHeaderInfo("Connection: keep-alive");
+                addHeaderInfo("Keep-Alive: timeout=3, max=100");
             }
 
-            if (keepAlive.equals("close"))
+            if (persistentConnection.equals("close"))
             {
-                addLine("Connection: close");
+                addHeaderInfo("Connection: close");
             }
 
         }
     }
 
-    public void checkChunked(){
-        try{
-        if(Settings.chunked && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0"))){
-
-            addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
-            addLine("Transfer-Encoding: chunked");
-        }else{
-            addLine("Content-Length: "+file2get.length());
-            addLine("Content-Type: "+file2get.toURI().toURL().openConnection().getContentType());
-        } 
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-    }
-    
     /**
-     * @return void
+     * Prüft ob von den Server Settings aus chunked Data aktiviert ist und setzt
+     * entsprechend die Header einträge und Splittet die zu versendende Dateien 
+     * in die Chunk-Size großen Fragmente.
+     * NOTE: Seit wir das eingebaut haben geht es ohne chucked nicht mehr :\
      */
-    public String getHttpVersion()
+    public void isChunkedData()
     {
-        return request.getHttpVersion();
+        try
+        {
+            if (Settings.chunked && !(clientRequest.getVersion().equalsIgnoreCase("HTTP/1.0")))
+            {
+
+                addHeaderInfo("Content-Type: " + fileToSend.toURI().toURL().openConnection().getContentType());
+                addHeaderInfo("Transfer-Encoding: chunked");
+            }
+            else
+            {
+                addHeaderInfo("Content-Length: " + fileToSend.length());
+                addHeaderInfo("Content-Type: " + fileToSend.toURI().toURL().openConnection().getContentType());
+            }
+        }
+        catch (IOException ioE)
+        {
+            ioE.printStackTrace();
+        }
     }
 
-        /**
-     * @param String
-     * @return String
+    /**
+     * gekapselte Methode des Request. 
+     * @return Gibt die HTTP Version zurück.
      */
-    private String generateErrorPage(
-            String anError)
+    public String getVersion()
+    {
+        return clientRequest.getVersion();
+    }
+
+    /**
+     * Text der Fehlerseite in HTML. Wird im Fehlerfall angezeigt
+     * und mit dem Enssprechende Fehlercod versehen.
+     */
+    private String createHTMLErrorPage(String errorType)
     {
         return "<html>\n" +
                 " <head>\n" +
-                "  <title>" + anError + "</title>\n" +
+                "  <title>" + errorType + "</title>\n" +
                 " </head>\n" +
                 " <body>\n" +
-                "  <h1>Following Error occurred: " + anError + "</h1>\n" +
-                "                                                                                                                                                                                                                                       " +
-                "                                                                                                                                                                                                                                       " +
-                "                                                                                                                                                                                                                                       \n" +
+                "  <h1>Ups, da hat wohl was nicht geklappt: " + errorType + "</h1>\n" +
+                "    <p>" +
+                "Mögliche Ursache:" +
+                "<ul>" +
+                "<li>Vertippt</li>" +
+                "<li>Seite existiert nicht meht</li>" +
+                "<li>Adresse der Seite hat sich geändet</li>"+
+                "<li>Der Server ist nicht fehlerfrei Programmier ;)</li>" +
+                "</ul>" +
+                "  </p>" +                                                                                                                                                                                                                         
                 " </body>\n" +
                 "</html>\r\n";
     }
-    
-    
-    
+
     /**
-     * @return void
+     * anhand des Typs der im request angefordert wurde, wird ein anderer Header
+     * als antwort verschickt. Hierbei werden die entsprechenden Werte und Informationen
+     * in eine ArrayList geschrieben die dann Bytekonvertiert in den OutputStream 
+     * gesendet wird.
      */
     public void generateResponse(String headerType)
     {
-        if(headerType.equals("GET"))
+        if (headerType.equals("GET"))
         {
-        addLine(getHttpVersion()+" 200 OK");
-        addDate();
-        checkKeepAlive();
-        checkChunked();
-        sendHeader();
+            addHeaderInfo(getVersion() + " 200 OK");
+            addDate();
+            checkForPersistentConnection();
+            isChunkedData();
         }
         else if (headerType.equals("STATUS"))
         {
-        addLine(getHttpVersion()+" "+statusCode);
-        addDate();
-        checkKeepAlive();
-        sendHeader();
-        return;
+            addHeaderInfo(getVersion() + " " + statusCode);
+            addDate();
+            checkForPersistentConnection();
         }
         else if (headerType.equals("ERROR"))
         {
-                    if (errorHeader.equals("302 Found"))
-        {
-            addLine(getHttpVersion() + " " + errorHeader);
-            addDate();
-            checkKeepAlive();
-            addLine("Location: " + this.Path + "index.html");
-            addLine("\r\n");
-            sendHeader();
-        }
-        else
-        {
-            addLine(getHttpVersion() + " " + errorHeader);
-            addDate();
-            checkKeepAlive();
-            addLine("Content-Type: text/html; charset=iso-8859-1");
-            addLine("Content-Length: " + (generateErrorPage(errorHeader).getBytes()).length);
-            sendHeader();
-            try
+            if (errorHeader.equals("302 Found"))
             {
-                output.write(generateErrorPage(errorHeader).getBytes());
-                output.write(("\r\n").getBytes());
-                output.flush();
+                addHeaderInfo(getVersion() + " " + errorHeader);
+                addDate();
+                checkForPersistentConnection();
+                addHeaderInfo("Location: " + this.Path + standardIndexPage);
+                addHeaderInfo("\r\n");
             }
-            catch (IOException e)
+            else
             {
-                gui.printMessages("Fehler beim Schicken der Fehlerstatus " + errorHeader + " :" + e.getMessage());
+                addHeaderInfo(getVersion() + " " + errorHeader);
+                addDate();
+                checkForPersistentConnection();
+                addHeaderInfo("Content-Type: text/html; charset=iso-8859-1");
+                addHeaderInfo("Content-Length: " + (createHTMLErrorPage(errorHeader).getBytes()).length);
+                try
+                {
+                    output.write(createHTMLErrorPage(errorHeader).getBytes());
+                    output.write(("\r\n").getBytes());
+                    output.flush();
+                }
+                catch (IOException ioE)
+                {
+                    gui.printMessages("Fehler beim Schicken der Fehlerstatus " + errorHeader + " :" + ioE.getMessage());
+                }
             }
         }
-        return;
-        }
+        sendHeader();
     }
 }
