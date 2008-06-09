@@ -1,4 +1,6 @@
-
+/**
+ * Request.java
+ */
 package webserver;
 
 import java.io.DataInputStream;
@@ -9,8 +11,9 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
 /**
-* Emppängt den Request vom Clienet(Browser) und "parst" den Header
- * und settz dementsprechend Attribute der Klasse
+ * @autor Jörg Mogielinski
+ * Emppängt den Request vom Clienet(Browser) und "parst" den Header
+ * und settz anhand der erhaltenen Tokens die Attribute der Klasse
  */
 public class Request
 {
@@ -29,9 +32,9 @@ public class Request
     String unmodifiedSince = "";
 
     /**
-     * * 
-     * Konstruktor der den Input gleich zerlegt
-     * @param in der InputStream des Sockets
+     * Konstruktor der den Request parsed und die Tokens entsprechend
+     * auswerted und Attribute der Klasse setzt
+     * @param innputStream Der InputStream der aud dem Socket eingelesen wurde
      */
     public Request(InputStream inputStream, Interface i)
     {
