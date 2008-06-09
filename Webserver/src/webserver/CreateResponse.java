@@ -1,11 +1,3 @@
-/*
- * ReplyHeader.java
- * 
- * Created on 22.06.2007, 11:22:51
- * 
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
 package webserver;
 
 import java.io.File;
@@ -14,8 +6,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
- *
- * @author fabian
+ * @autor Jörg Mogielinski
+ * Erstellt aus dem Request eine Antwort. Überladene Konstruktoren
+ * für verschiedene Header Typen
  */
 public class CreateResponse
 {
@@ -25,19 +18,19 @@ public class CreateResponse
     String persistentConnection;
     Interface gui;
     File fileToSend;
-    private String statusCode;
     String errorHeader;
-    private String Path;
-    String standardIndexPage = "index.html";
+    String standardIndexPage = "index.html";    
+    private String statusCode;
+    private String path;
+
 
     /**
-     * Konstruktor. Speichert den Outputstream, den aktuellen Request und das GUI
-     * als Attribute ab.
-     * @param OutputStream; ClientRequest
-     * 
+     * Konstruktoren. Speichern je nach Bedarf/Headertyp ander Atributwerte
+     * Outputstream, Request und GUI werden immer mitgegeben. 
+     * Für GET das File
+     * Für Status-Header der StatusCode
+     * Für ErrorHeader der Spezifische Error Header
      */
-
-
     //GET
     public CreateResponse(OutputStream out, File file2get, Request request, Interface i)
     {
@@ -49,6 +42,7 @@ public class CreateResponse
         this.gui = i;
     }
 
+    //Status zb Für POST oder Midiefied/Unmodified
     public CreateResponse(OutputStream out, Request request, String statusCode, Interface i)
     {
         httpHeader = new ArrayList<String>();
@@ -73,7 +67,7 @@ public class CreateResponse
     void setPath(String path)
     {
         gui.printMessages("Path: " + path);
-        this.Path = path;
+        this.path = path;
     }
 
     /**
@@ -154,7 +148,7 @@ public class CreateResponse
     {
         try
         {
-            if (Settings.chunked && !(clientRequest.getVersion().equalsIgnoreCase("HTTP/1.0")))
+            if (Settings.chunkedData && !(clientRequest.getVersion().equalsIgnoreCase("HTTP/1.0")))
             {
 
                 addHeaderInfo("Content-Type: " + fileToSend.toURI().toURL().openConnection().getContentType());
@@ -234,7 +228,7 @@ public class CreateResponse
                 addHeaderInfo(getVersion() + " " + errorHeader);
                 addDate();
                 checkForPersistentConnection();
-                addHeaderInfo("Location: " + this.Path + standardIndexPage);
+                addHeaderInfo("Location: " + this.path + standardIndexPage);
                 addHeaderInfo("\r\n");
             }
             else

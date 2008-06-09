@@ -57,7 +57,7 @@ public class Message
             return dateiInByte;
     }
 
-	/**
+    /**
      *  Gibt enweder die Datei zurueck oder verschiedene Fehlermeldungen and den Browser 
      *  @param isGetRequest: ob es ein GET Request ist
      *  @return void
@@ -104,7 +104,7 @@ public class Message
     {
         try
         {
-            FileWriter fileWriter = new FileWriter(Settings.postFile, true);
+            FileWriter fileWriter = new FileWriter(Settings.postedContent, true);
             fileWriter.write("Zeit: " + Settings.getDate() + "; Inhalt: " + postRequest + "\n");
             fileWriter.flush();
             fileWriter.close();
@@ -129,29 +129,29 @@ public class Message
             int fileLength = file.length;
 
 			//Wenn in den Einstellungen chunked auf true ist und der Clientreqest der Version 1.1 entspricht
-            if (Settings.chunked && clientRequest.getVersion().equalsIgnoreCase("HTTP/1.1"))
+            if (Settings.chunkedData && clientRequest.getVersion().equalsIgnoreCase("HTTP/1.1"))
             {
 				//Mache kleine Byte-stuecke
-                byte[] chunk = new byte[Settings.chunk_size];
+                byte[] chunk = new byte[Settings.chunkedDataSize];
                 int i = 0;
                 for (i = 0; i < fileLength; i++)
                 {
 					//Sobald die chunk_size (oder ein Vielfaches davon) erreicht ist mach wieder ein neues Packet
-                    if (i % (Settings.chunk_size) == 0 && i > 0)
+                    if (i % (Settings.chunkedDataSize) == 0 && i > 0)
                     {
-                        outputStream.write(Integer.toHexString(Settings.chunk_size).getBytes());
+                        outputStream.write(Integer.toHexString(Settings.chunkedDataSize).getBytes());
                         outputStream.write(("\r\n").getBytes());
                         outputStream.write(chunk);
                         outputStream.write(("\r\n").getBytes());
                     }
                     //Hier stehen dann die einzelnen Packete in einem Array drin
-                    chunk[i % (Settings.chunk_size)] = file[i];
+                    chunk[i % (Settings.chunkedDataSize)] = file[i];
                 }
 
-                outputStream.write(Integer.toHexString((i % Settings.chunk_size)).getBytes());
+                outputStream.write(Integer.toHexString((i % Settings.chunkedDataSize)).getBytes());
                 outputStream.write(("\r\n").getBytes());
 
-                for (int j = 0; j < (i % Settings.chunk_size); j++)
+                for (int j = 0; j < (i % Settings.chunkedDataSize); j++)
                 {
                     outputStream.write(chunk[j]);
                 }
