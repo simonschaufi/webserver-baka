@@ -1,12 +1,4 @@
-/*
- * Message.java
- *
- * Created on 19. Juni 2007, 11:24
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-package webserver;
+﻿package webserver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,65 +10,83 @@ import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
- *
- * @author schwendemann.sebasti
+ * @author  Simon Schaufelberger
+ * Diese Klasse ist fuer die Uebertragung einer Nachricht zum Client verantwortlich
  */
 public class Message
 {
 
-    /** Creates a new instance of Message */
-    ClientRequest request;
-    OutputStream output;
-    File file2get;
+    /* Erzeugt eine neue Instanz Creates einer Nachricht */
+    ClientRequest clientRequest;
+    OutputStream outputStream;
+    File fileToRead;
     String filePath;
-    Interface gui;
+    Interface guiInterface;
 
-    public Message(ClientRequest request, OutputStream out, Interface i) throws ClientException
+	//Konstruktor
+    public Message(ClientRequest clientRequest, OutputStream outputStream, Interface guiInterface) throws ClientException
     {
-        this.gui = i;
-        this.request = request;
-        this.output = out;
-        String path = request.getFilePath().replace("%20", " ");
-        file2get = new File(path);
-        gui.printMessages("Root: " + file2get.getPath());
+    	//Speichere die Objekte in die lokalen Objekte ab
+        this.guiInterface = guiInterface;
+        this.clientRequest = clientRequest;
+        this.outputStream = outputStream;
+        //Hole den Dateipfad und ersetzte HTML-formatierte Leerzeichen durch echte Leerzeichen
+        String path = clientRequest.getFilePath().replace("%20", " ");
+        fileToRead = new File(path);
+        
+        //Ausgabe auf der GUI
+        guiInterface.printMessages("Root: " + fileToRead.getPath());
     }
 
     /**
-     *  Liest die angeforderte Datei ein und Wandelt sie in ByteCode um damit diese
-     * verschickt werden kann
-     *  @param filePath Dateiname + Pfad der angefordert wird
-     *  @return Eingelesenes File als Byte array
-     *  @throws IOException falls das lesen der Datei fehlschlägt
+     *  Liest die angeforderte Datei ein und gibt die Datei als ByteCode zurueck
+     *  @param filePath: Pfad der angefordert wird
+     *  @return eingelesene Datei als Bytearray
+     *  @throws IOException, falls es zu einem Fehler beim lesen der Datei kommt
      */
     static public byte[] getFile(String filePath) throws IOException
     {
-            File file2get = new File(filePath);
-            byte[] dateiInByte = new byte[(int) file2get.length()];
-            FileInputStream inputStream = new FileInputStream(file2get);
+            File fileToRead = new File(filePath);
+            //Legt ein Bytearray an
+            byte[] dateiInByte = new byte[(int)fileToRead.length()];
+            //wandelt die Datei in einen Stream um
+            FileInputStream inputStream = new FileInputStream(fileToRead);
+            //Liest sie ein...
             inputStream.read(dateiInByte);
+            //...und gibt sie als Bytearray zurueck
             return dateiInByte;
     }
-        
-    
+
+	/**
+     *  Gibt enweder die Datei zurueck oder verschiedene Fehlermeldungen and den Browser 
+     *  @param isGetRequest: ob es ein GET Request ist
+     *  @return void
+     *  @throws mehrere ClientExceptions, falls es zu einem Fehler kommt
+     */
     public void replyRequest(boolean isGetRequest) throws ClientException
     {
-
-        if (file2get.exists())
+		//Falls Datei existiert
+        if (fileToRead.exists())
         {
-            if (file2get.canRead())
+        	//und diese Datei lesbar (Zugriffsrechte gesetzt) ist
+            if (fileToRead.canRead())
             {
-                if (!file2get.isDirectory())
+            	//wenn es kein Ordner ist
+                if (!fileToRead.isDirectory())
                 {
+                	//Abfrage, ob die Datei geaendert wurde
                     checkModifiedStates();
-                    new CreateResponse(output, file2get, request, gui  ).generateResponse("GET");
+                    //Erzeute eine GET Antwort der Datei
+                    new CreateResponse(outputStream, fileToRead, clientRequest, guiInterface).generateResponse("GET");
+                    //Wenn der Parameter auf true ist, schick die Datei zum Browser
                     if (isGetRequest)
                         sendFile();
                 }
-                else
-                    if (file2get.isDirectory())
-                    {
-                        throw new ClientException("302 Found");
-                    }
+                //wenn es doch ein Ordner ist
+				else
+                {
+                    throw new ClientException("302 Found");
+                }
             }
             else
             {
@@ -89,202 +99,215 @@ public class Message
         }
     }
 
-    public void writePostToFile(String aPost)
+	//Schreibt POST Request in eine Datei
+    public void writePostToFile(String postRequest)
     {
         try
         {
-            FileWriter writer = new FileWriter(Settings.postFile, true);
-            writer.write(Settings.getTheTime() + " --> " + aPost + "\n");
-            writer.flush();
-            writer.close();
+            FileWriter fileWriter = new FileWriter(Settings.postFile, true);
+            fileWriter.write("Zeit: " + Settings.getTheTime() + "; Inhalt: " + postRequest + "\n");
+            fileWriter.flush();
+            fileWriter.close();
         }
-        catch (IOException e)
+        catch (IOException ioEx)
         {
-            gui.printMessages("Fehler beim Schreiben der Post-Datei: " + e.getMessage());
+            guiInterface.printMessages("Fehler beim Schreiben der POST-Informationen in die Datei. Fehlermeldung: " + ioEx.getMessage());
         }
-
     }
 
+	//Sendet eine Datei als OutputStream
     public void sendFile() throws ClientException
     {
         try
         {
             ArrayList<Byte> lineBuffer = new ArrayList<Byte>();
-            String path = request.getFilePath().replace("%20", " ");
+            //Hole den Dateipfad und ersetzte HTML-formatierte Leerzeichen durch echte Leerzeichen
+            String path = clientRequest.getFilePath().replace("%20", " ");
+            //Hole die Datei und speichere sie in einem Bytearray ab
             byte[] file = getFile(path);
+            //Speichere die Dateilaenge ab
             int fileLength = file.length;
 
-            if (Settings.chunked && !(request.getHttpVersion().equalsIgnoreCase("HTTP/1.0")))
+			//Wenn in den Einstellungen chunked auf true ist und der Clientreqest der Version 1.1 entspricht
+            if (Settings.chunked && clientRequest.getHttpVersion().equalsIgnoreCase("HTTP/1.1"))
             {
-
+				//Mache kleine Byte-stuecke
                 byte[] chunk = new byte[Settings.chunk_size];
-                int i = 0;
-                for (i = 0; i < fileLength; i++)
+                
+                for (int i = 0; i < fileLength; i++)
                 {
-
+					//Sobald die chunk_size (oder ein Vielfaches davon) erreicht ist mach wieder ein neues Packet
                     if (i % (Settings.chunk_size) == 0 && i > 0)
                     {
-                        output.write(Integer.toHexString(Settings.chunk_size).getBytes());
-                        output.write(("\r\n").getBytes());
-                        output.write(chunk);
-                        output.write(("\r\n").getBytes());
+                        outputStream.write(Integer.toHexString(Settings.chunk_size).getBytes());
+                        outputStream.write(("\r\n").getBytes());
+                        outputStream.write(chunk);
+                        outputStream.write(("\r\n").getBytes());
                     }
+                    //Hier stehen dann die einzelnen Packete in einem Array drin
                     chunk[i % (Settings.chunk_size)] = file[i];
                 }
 
-                output.write(Integer.toHexString((i % Settings.chunk_size)).getBytes());
-                output.write(("\r\n").getBytes());
+                outputStream.write(Integer.toHexString((i % Settings.chunk_size)).getBytes());
+                outputStream.write(("\r\n").getBytes());
 
                 for (int j = 0; j < (i % Settings.chunk_size); j++)
                 {
-                    output.write(chunk[j]);
+                    outputStream.write(chunk[j]);
                 }
-
-                output.write(("\r\n").getBytes());
-                output.write(Integer.toHexString(0).getBytes());
-                output.write(("\r\n").getBytes());
-                output.write(("\r\n").getBytes());
+                
+                outputStream.write(("\r\n").getBytes());
+                //Ende der Datei (Hex 0)
+                outputStream.write(Integer.toHexString(0).getBytes());
+                outputStream.write(("\r\n").getBytes());
+                outputStream.write(("\r\n").getBytes());
             }
+            //alle anderen HTTP Versionen
             else
             {
-                output.write(file);
-                output.write(("\r\n").getBytes());
-                output.flush();
+                outputStream.write(file);
+                outputStream.write(("\r\n").getBytes());
+                outputStream.flush();
             }
-
         }
-        catch (IOException e)
+        catch (IOException ioEx)
         {
-            gui.printMessages("Das Senden der Datei schlug fehl: " + e.getMessage());
+            guiInterface.printMessages("Das Senden der Datei schlug fehl: " + ioEx.getMessage());
         }
     }
 
+	//ueberprueft, ob die Datei geaendert wurde
     private void checkModifiedStates() throws ClientException
     {
-        //modified test
-        if (!request.getIfModified().equals(""))
+    	//Modified Test
+        if (!clientRequest.getIfModified().equals(""))
         {
-            StringTokenizer st = new StringTokenizer(request.getIfModified(), " ");
+            StringTokenizer st = new StringTokenizer(clientRequest.getIfModified(), " ");
             st.nextToken();
             int[] DateFromClient = new int[6];
             DateFromClient[2] = Integer.parseInt(st.nextToken()); //Tag
-            String Smonth = st.nextToken();//Monat
+            String month = st.nextToken(); //Monat
 
-            if (Smonth.equals("Jan"))
+            if (month.equals("Jan"))
                 DateFromClient[1] = 0;
             else
-                if (Smonth.equals("Feb"))
+                if (month.equals("Feb"))
                     DateFromClient[1] = 1;
                 else
-                    if (Smonth.equals("Mar"))
+                    if (month.equals("Mar"))
                         DateFromClient[1] = 2;
                     else
-                        if (Smonth.equals("Apr"))
+                        if (month.equals("Apr"))
                             DateFromClient[1] = 3;
                         else
-                            if (Smonth.equals("May"))
+                            if (month.equals("May"))
                                 DateFromClient[1] = 4;
                             else
-                                if (Smonth.equals("Jun"))
+                                if (month.equals("Jun"))
                                     DateFromClient[1] = 5;
                                 else
-                                    if (Smonth.equals("Jul"))
+                                    if (month.equals("Jul"))
                                         DateFromClient[1] = 6;
                                     else
-                                        if (Smonth.equals("Aug"))
+                                        if (month.equals("Aug"))
                                             DateFromClient[1] = 7;
                                         else
-                                            if (Smonth.equals("Sep"))
+                                            if (month.equals("Sep"))
                                                 DateFromClient[1] = 8;
                                             else
-                                                if (Smonth.equals("Oct"))
+                                                if (month.equals("Oct"))
                                                     DateFromClient[1] = 9;
                                                 else
-                                                    if (Smonth.equals("Nov"))
+                                                    if (month.equals("Nov"))
                                                         DateFromClient[1] = 10;
                                                     else
-                                                        if (Smonth.equals("Dec"))
+                                                        if (month.equals("Dec"))
                                                             DateFromClient[1] = 11;
             DateFromClient[0] = Integer.parseInt(st.nextToken()); //Yahr
             DateFromClient[3] = Integer.parseInt(st.nextToken(":").substring(1)); //Stunden
-            DateFromClient[4] = Integer.parseInt(st.nextToken(":")); // min     
-            DateFromClient[5] = Integer.parseInt(st.nextToken(" ").substring(1)); // sek
+            DateFromClient[4] = Integer.parseInt(st.nextToken(":")); // Min     
+            DateFromClient[5] = Integer.parseInt(st.nextToken(" ").substring(1)); // Sek
             int[] DateFromFile = new int[6];
-            Date fileDate = new Date(file2get.lastModified());
+            
+            Date fileDate = new Date(fileToRead.lastModified());
             DateFromFile[0] = fileDate.getYear() + 1900;
             DateFromFile[1] = fileDate.getMonth();
             DateFromFile[2] = fileDate.getDay();
             DateFromFile[3] = fileDate.getHours();
             DateFromFile[4] = fileDate.getMinutes();
             DateFromFile[5] = fileDate.getSeconds();
-            for (int ik = 0; ik <= 5; ik++)
+            
+            for (int i = 0; i <= 5; i++)
             {
-                if (DateFromFile[ik] < DateFromClient[ik])
+                if (DateFromFile[i] < DateFromClient[i])
                     throw new ClientException("304");
-                if (DateFromFile[ik] > DateFromClient[ik])
+                if (DateFromFile[i] > DateFromClient[i])
                     break;
             }
 
         }
         //Unmodified test
-        if (!request.getIfUnModified().equals(""))
+        if (!clientRequest.getIfUnModified().equals(""))
         {
-            StringTokenizer st = new StringTokenizer(request.getIfUnModified(), " ");
+            StringTokenizer st = new StringTokenizer(clientRequest.getIfUnModified(), " ");
             st.nextToken();
             int[] DateFromClient = new int[6];
             DateFromClient[2] = Integer.parseInt(st.nextToken()); //Tag
-            String Smonth = st.nextToken();//Monat
+            String month = st.nextToken(); //Monat
 
-            if (Smonth.equals("Jan"))
+            if (month.equals("Jan"))
                 DateFromClient[1] = 0;
             else
-                if (Smonth.equals("Feb"))
+                if (month.equals("Feb"))
                     DateFromClient[1] = 1;
                 else
-                    if (Smonth.equals("Mar"))
+                    if (month.equals("Mar"))
                         DateFromClient[1] = 2;
                     else
-                        if (Smonth.equals("Apr"))
+                        if (month.equals("Apr"))
                             DateFromClient[1] = 3;
                         else
-                            if (Smonth.equals("May"))
+                            if (month.equals("May"))
                                 DateFromClient[1] = 4;
                             else
-                                if (Smonth.equals("Jun"))
+                                if (month.equals("Jun"))
                                     DateFromClient[1] = 5;
                                 else
-                                    if (Smonth.equals("Jul"))
+                                    if (month.equals("Jul"))
                                         DateFromClient[1] = 6;
                                     else
-                                        if (Smonth.equals("Aug"))
+                                        if (month.equals("Aug"))
                                             DateFromClient[1] = 7;
                                         else
-                                            if (Smonth.equals("Sep"))
+                                            if (month.equals("Sep"))
                                                 DateFromClient[1] = 8;
                                             else
-                                                if (Smonth.equals("Oct"))
+                                                if (month.equals("Oct"))
                                                     DateFromClient[1] = 9;
                                                 else
-                                                    if (Smonth.equals("Nov"))
+                                                    if (month.equals("Nov"))
                                                         DateFromClient[1] = 10;
                                                     else
-                                                        if (Smonth.equals("Dec"))
+                                                        if (month.equals("Dec"))
                                                             DateFromClient[1] = 11;
             DateFromClient[0] = Integer.parseInt(st.nextToken()); //Yahr
             DateFromClient[3] = Integer.parseInt(st.nextToken(":").substring(1)); //Stunden
-            DateFromClient[4] = Integer.parseInt(st.nextToken(":")); // min     
-            DateFromClient[5] = Integer.parseInt(st.nextToken(" ").substring(1)); // sek
+            DateFromClient[4] = Integer.parseInt(st.nextToken(":")); //Min     
+            DateFromClient[5] = Integer.parseInt(st.nextToken(" ").substring(1)); //Sek
+            
             int[] DateFromFile = new int[6];
-            Date fileDate = new Date(file2get.lastModified());
+            
+            Date fileDate = new Date(fileToRead.lastModified());
             DateFromFile[0] = fileDate.getYear() + 1900;
             DateFromFile[1] = fileDate.getMonth();
             DateFromFile[2] = fileDate.getDay();
             DateFromFile[3] = fileDate.getHours();
             DateFromFile[4] = fileDate.getMinutes();
             DateFromFile[5] = fileDate.getSeconds();
-            for (int ik = 0; ik <= 5; ik++)
+            
+            for (int i = 0; i <= 5; i++)
             {
-                if (DateFromFile[ik] != DateFromClient[ik])
+                if (DateFromFile[i] != DateFromClient[i])
                     throw new ClientException("412 Precondition Failed");
             }
         }
@@ -294,12 +317,12 @@ public class Message
     {
         try
         {
-            String con = "HTTP/1.1 100 Continue" + ("\r\n") + ("\r\n");
-            output.write(con.getBytes());
+            String continue = "HTTP/1.1 100 Continue\r\n\r\n");
+            outputStream.write(continue.getBytes());
         }
-        catch (IOException e)
+        catch (IOException ioEx)
         {
-            gui.printMessages("100 Continue Fehler");
+            guiInterface.printMessages("100 Continue Fehler");
         }
     }
 }
