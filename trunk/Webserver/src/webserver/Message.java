@@ -1,4 +1,4 @@
-package webserver;    
+package webserver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,14 +26,14 @@ public class Message
     //Konstruktor
     public Message(Request clientRequest, OutputStream outputStream, Interface guiInterface) throws ClientException
     {
-    	//Speichere die Objekte in die lokalen Objekte ab
+        //Speichere die Objekte in die lokalen Objekte ab
         this.guiInterface = guiInterface;
         this.clientRequest = clientRequest;
         this.outputStream = outputStream;
         //Hole den Dateipfad und ersetzte HTML-formatierte Leerzeichen durch echte Leerzeichen
         String path = clientRequest.getFilePath().replace("%20", " ");
         fileToRead = new File(path);
-        
+
         //Ausgabe auf der GUI
         guiInterface.printMessages("Root: " + fileToRead.getPath());
     }
@@ -46,15 +46,15 @@ public class Message
      */
     static public byte[] getFile(String filePath) throws IOException
     {
-            File fileToRead = new File(filePath);
-            //Legt ein Bytearray an
-            byte[] dateiInByte = new byte[(int)fileToRead.length()];
-            //wandelt die Datei in einen Stream um
-            FileInputStream inputStream = new FileInputStream(fileToRead);
-            //Liest sie ein...
-            inputStream.read(dateiInByte);
-            //...und gibt sie als Bytearray zurueck
-            return dateiInByte;
+        File fileToRead = new File(filePath);
+        //Legt ein Bytearray an
+        byte[] dateiInByte = new byte[(int) fileToRead.length()];
+        //wandelt die Datei in einen Stream um
+        FileInputStream inputStream = new FileInputStream(fileToRead);
+        //Liest sie ein...
+        inputStream.read(dateiInByte);
+        //...und gibt sie als Bytearray zurueck
+        return dateiInByte;
     }
 
     /**
@@ -71,7 +71,7 @@ public class Message
             //und diese Datei lesbar (Zugriffsrechte gesetzt) ist
             if (fileToRead.canRead())
             {
-            	//wenn es kein Ordner ist
+                //wenn es kein Ordner ist
                 if (!fileToRead.isDirectory())
                 {
                     //Abfrage, ob die Datei geaendert wurde
@@ -99,7 +99,7 @@ public class Message
         }
     }
 
-	//Schreibt POST Request in eine Datei
+    //Schreibt POST Request in eine Datei
     public void writePostToFile(String postRequest)
     {
         try
@@ -115,7 +115,7 @@ public class Message
         }
     }
 
-	//Sendet eine Datei als OutputStream
+    //Sendet eine Datei als OutputStream
     public void sendFile() throws ClientException
     {
         try
@@ -155,7 +155,7 @@ public class Message
                 {
                     outputStream.write(chunk[j]);
                 }
-                
+
                 outputStream.write(("\r\n").getBytes());
                 //Ende der Datei (Hex 0)
                 outputStream.write(Integer.toHexString(0).getBytes());
@@ -176,10 +176,10 @@ public class Message
         }
     }
 
-	//ueberprueft, ob die Datei geaendert wurde
+    //ueberprueft, ob die Datei geaendert wurde
     private void checkModifiedStates() throws ClientException
     {
-    	//Modified Test
+        //Modified Test
         if (!clientRequest.getModifiedSince().equals(""))
         {
             StringTokenizer st = new StringTokenizer(clientRequest.getModifiedSince(), " ");
@@ -190,45 +190,34 @@ public class Message
 
             if (month.equals("Jan"))
                 DateFromClient[1] = 0;
-            else
-                if (month.equals("Feb"))
-                    DateFromClient[1] = 1;
-                else
-                    if (month.equals("Mar"))
-                        DateFromClient[1] = 2;
-                    else
-                        if (month.equals("Apr"))
-                            DateFromClient[1] = 3;
-                        else
-                            if (month.equals("May"))
-                                DateFromClient[1] = 4;
-                            else
-                                if (month.equals("Jun"))
-                                    DateFromClient[1] = 5;
-                                else
-                                    if (month.equals("Jul"))
-                                        DateFromClient[1] = 6;
-                                    else
-                                        if (month.equals("Aug"))
-                                            DateFromClient[1] = 7;
-                                        else
-                                            if (month.equals("Sep"))
-                                                DateFromClient[1] = 8;
-                                            else
-                                                if (month.equals("Oct"))
-                                                    DateFromClient[1] = 9;
-                                                else
-                                                    if (month.equals("Nov"))
-                                                        DateFromClient[1] = 10;
-                                                    else
-                                                        if (month.equals("Dec"))
-                                                            DateFromClient[1] = 11;
+            else if (month.equals("Feb"))
+                DateFromClient[1] = 1;
+            else if (month.equals("Mar"))
+                DateFromClient[1] = 2;
+            else if (month.equals("Apr"))
+                DateFromClient[1] = 3;
+            else if (month.equals("May"))
+                DateFromClient[1] = 4;
+            else if (month.equals("Jun"))
+                DateFromClient[1] = 5;
+            else if (month.equals("Jul"))
+                DateFromClient[1] = 6;
+            else if (month.equals("Aug"))
+                DateFromClient[1] = 7;
+            else if (month.equals("Sep"))
+                DateFromClient[1] = 8;
+            else if (month.equals("Oct"))
+                DateFromClient[1] = 9;
+            else if (month.equals("Nov"))
+                DateFromClient[1] = 10;
+            else if (month.equals("Dec"))
+                DateFromClient[1] = 11;
             DateFromClient[0] = Integer.parseInt(st.nextToken()); //Yahr
             DateFromClient[3] = Integer.parseInt(st.nextToken(":").substring(1)); //Stunden
             DateFromClient[4] = Integer.parseInt(st.nextToken(":")); // Min     
             DateFromClient[5] = Integer.parseInt(st.nextToken(" ").substring(1)); // Sek
             int[] DateFromFile = new int[6];
-            
+
             Date fileDate = new Date(fileToRead.lastModified());
             DateFromFile[0] = fileDate.getYear() + 1900;
             DateFromFile[1] = fileDate.getMonth();
@@ -236,7 +225,7 @@ public class Message
             DateFromFile[3] = fileDate.getHours();
             DateFromFile[4] = fileDate.getMinutes();
             DateFromFile[5] = fileDate.getSeconds();
-            
+
             for (int i = 0; i <= 5; i++)
             {
                 if (DateFromFile[i] < DateFromClient[i])
@@ -257,46 +246,35 @@ public class Message
 
             if (month.equals("Jan"))
                 DateFromClient[1] = 0;
-            else
-                if (month.equals("Feb"))
-                    DateFromClient[1] = 1;
-                else
-                    if (month.equals("Mar"))
-                        DateFromClient[1] = 2;
-                    else
-                        if (month.equals("Apr"))
-                            DateFromClient[1] = 3;
-                        else
-                            if (month.equals("May"))
-                                DateFromClient[1] = 4;
-                            else
-                                if (month.equals("Jun"))
-                                    DateFromClient[1] = 5;
-                                else
-                                    if (month.equals("Jul"))
-                                        DateFromClient[1] = 6;
-                                    else
-                                        if (month.equals("Aug"))
-                                            DateFromClient[1] = 7;
-                                        else
-                                            if (month.equals("Sep"))
-                                                DateFromClient[1] = 8;
-                                            else
-                                                if (month.equals("Oct"))
-                                                    DateFromClient[1] = 9;
-                                                else
-                                                    if (month.equals("Nov"))
-                                                        DateFromClient[1] = 10;
-                                                    else
-                                                        if (month.equals("Dec"))
-                                                            DateFromClient[1] = 11;
+            else if (month.equals("Feb"))
+                DateFromClient[1] = 1;
+            else if (month.equals("Mar"))
+                DateFromClient[1] = 2;
+            else if (month.equals("Apr"))
+                DateFromClient[1] = 3;
+            else if (month.equals("May"))
+                DateFromClient[1] = 4;
+            else if (month.equals("Jun"))
+                DateFromClient[1] = 5;
+            else if (month.equals("Jul"))
+                DateFromClient[1] = 6;
+            else if (month.equals("Aug"))
+                DateFromClient[1] = 7;
+            else if (month.equals("Sep"))
+                DateFromClient[1] = 8;
+            else if (month.equals("Oct"))
+                DateFromClient[1] = 9;
+            else if (month.equals("Nov"))
+                DateFromClient[1] = 10;
+            else if (month.equals("Dec"))
+                DateFromClient[1] = 11;
             DateFromClient[0] = Integer.parseInt(st.nextToken()); //Yahr
             DateFromClient[3] = Integer.parseInt(st.nextToken(":").substring(1)); //Stunden
             DateFromClient[4] = Integer.parseInt(st.nextToken(":")); //Min     
             DateFromClient[5] = Integer.parseInt(st.nextToken(" ").substring(1)); //Sek
-            
+
             int[] DateFromFile = new int[6];
-            
+
             Date fileDate = new Date(fileToRead.lastModified());
             DateFromFile[0] = fileDate.getYear() + 1900;
             DateFromFile[1] = fileDate.getMonth();
@@ -304,7 +282,7 @@ public class Message
             DateFromFile[3] = fileDate.getHours();
             DateFromFile[4] = fileDate.getMinutes();
             DateFromFile[5] = fileDate.getSeconds();
-            
+
             for (int i = 0; i <= 5; i++)
             {
                 if (DateFromFile[i] != DateFromClient[i])

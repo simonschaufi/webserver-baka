@@ -1,27 +1,21 @@
 /*
  * ClientException.java
- * 
- * Created on 19.06.2007, 21:08:29
- * 
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package webserver;
 
 /**
- *
- * @author Fabian Breuer
- * Eigene Klasse um Fehler zu schmeißen z.B. 400
+ *Kann eine Response nicht erfolgreich erstellt werden, werfen die
+ * Jeweiligen Funktionen eien Client Exeption mit den Exeption Messages
+ * wie 302 oder 402 etc. welche dann von CreateResponse Klasse ausgegeben werden
  */
 public class ClientException extends Exception{
 /**
- * * 
- * Konstruktor 
- * @param anException der FehlerCode
+ *  Konstruktor, nuztz Konstruktor der Oberklasse, öediglich die ExeptioMessage
+ * wird Hier angegeben
  */
-    public ClientException(String anException) {
-        super(anException);
+    public ClientException(String exeptionMessage) {
+        super(exeptionMessage);
     }
 
 }
