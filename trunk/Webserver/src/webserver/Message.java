@@ -16,14 +16,14 @@ import java.util.StringTokenizer;
 public class Message
 {
 
-    /* Erzeugt eine neue Instanz einer Nachricht */
+    // Erzeugt eine neue Instanz einer Nachricht
     Request clientRequest;
     OutputStream outputStream;
     File fileToRead;
     String filePath;
     Interface guiInterface;
 
-	//Konstruktor
+    //Konstruktor
     public Message(Request clientRequest, OutputStream outputStream, Interface guiInterface) throws ClientException
     {
     	//Speichere die Objekte in die lokalen Objekte ab
@@ -65,16 +65,16 @@ public class Message
      */
     public void replyRequest(boolean isGetRequest) throws ClientException
     {
-		//Falls Datei existiert
+        //Falls Datei existiert
         if (fileToRead.exists())
         {
-        	//und diese Datei lesbar (Zugriffsrechte gesetzt) ist
+            //und diese Datei lesbar (Zugriffsrechte gesetzt) ist
             if (fileToRead.canRead())
             {
             	//wenn es kein Ordner ist
                 if (!fileToRead.isDirectory())
                 {
-                	//Abfrage, ob die Datei geaendert wurde
+                    //Abfrage, ob die Datei geaendert wurde
                     checkModifiedStates();
                     //Erzeute eine GET Antwort der Datei
                     new CreateResponse(outputStream, fileToRead, clientRequest, guiInterface).generateResponse("GET");
@@ -83,7 +83,7 @@ public class Message
                         sendFile();
                 }
                 //wenn es doch ein Ordner ist
-				else
+                else
                 {
                     throw new ClientException("302 Found");
                 }
@@ -128,15 +128,15 @@ public class Message
             //Speichere die Dateilaenge ab
             int fileLength = file.length;
 
-			//Wenn in den Einstellungen chunked auf true ist und der Clientreqest der Version 1.1 entspricht
+            //Wenn in den Einstellungen chunked auf true ist und der Clientreqest der Version 1.1 entspricht
             if (Settings.chunkedData && clientRequest.getVersion().equalsIgnoreCase("HTTP/1.1"))
             {
-				//Mache kleine Byte-stuecke
+                //Mache kleine Byte-stuecke
                 byte[] chunk = new byte[Settings.chunkedDataSize];
                 int i = 0;
                 for (i = 0; i < fileLength; i++)
                 {
-					//Sobald die chunk_size (oder ein Vielfaches davon) erreicht ist mach wieder ein neues Packet
+                    //Sobald die chunk_size (oder ein Vielfaches davon) erreicht ist mach wieder ein neues Packet
                     if (i % (Settings.chunkedDataSize) == 0 && i > 0)
                     {
                         outputStream.write(Integer.toHexString(Settings.chunkedDataSize).getBytes());
