@@ -104,6 +104,7 @@ public class CreateResponse
             System.out.println(e.getMessage());
         }
 
+
     }
 
     /**
@@ -144,7 +145,7 @@ public class CreateResponse
      * in die Chunk-Size großen Fragmente.
      * NOTE: Seit wir das eingebaut haben geht es ohne chucked nicht mehr :\
      */
-    public void isChunkedData()
+    public void addFileInfos()
     {
         try
         {
@@ -204,10 +205,8 @@ public class CreateResponse
         {
             
             addHeaderInfo(getVersion() + " 200 OK");
-            
-            System.out.println("sdfasdofsdf");addDate();
             checkForPersistentConnection();
-            isChunkedData();
+            addFileInfos();
           
         }
         else if (headerType.equals("STATUS"))

@@ -120,6 +120,8 @@ public class Request
             lineBefore = singleLine;
             
         }
+        if(headerType.equals("POST"))
+            postKeyValueString = lineBefore.trim();
         if (version.equals(""))
             version = "HTTP/1.0";
     }
