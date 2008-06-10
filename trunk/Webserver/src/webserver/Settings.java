@@ -16,12 +16,6 @@ import java.util.TimeZone;
  * Verwaltung des MultiHoming finder hier statt
  */
 public class Settings {
-
-    /** Sagt aus ob der Server seine Daten chunked versendet */
-    public static boolean chunkedData = false;
-    
-    /** Legt die Größe eines Fragmentes (chunk) fest*/
-    public static int chunkedDataSize = 20;
     
     /** Wird 100 Continue verwendet?*/
     public static boolean use100Continue = false;

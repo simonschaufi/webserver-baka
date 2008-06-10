@@ -91,7 +91,6 @@ public class CreateResponse
             for (int i = 0; i < httpHeader.size(); i++)
             {
                 output.write(httpHeader.get(i).getBytes());
-                System.out.println(i);
                 gui.printMessages((httpHeader.get(i).toString()).trim());
             }
 
@@ -149,18 +148,9 @@ public class CreateResponse
     {
         try
         {
-            if (Settings.chunkedData && !(clientRequest.getVersion().equalsIgnoreCase("HTTP/1.0")))
-            {
-
-                addHeaderInfo("Content-Type: " + fileToSend.toURI().toURL().openConnection().getContentType());
-                addHeaderInfo("Transfer-Encoding: chunked");
-            }
-            else
-            {
                 addHeaderInfo("Content-Length: " + fileToSend.length());
                 addHeaderInfo("Content-Type: " + fileToSend.toURI().toURL().openConnection().getContentType());
-                  System.out.println(fileToSend.toURI().toURL().openConnection().getContentType());
-            }
+                 System.out.println(fileToSend.toURI().toURL().openConnection().getContentType());
         }
         catch (IOException ioE)
         {
@@ -209,7 +199,7 @@ public class CreateResponse
      * gesendet wird.
      */
     public void generateResponse(String headerType)
-    {//System.out.println("sdfasdofsdf");
+    {
         if (headerType.equals("GET"))
         {
             
