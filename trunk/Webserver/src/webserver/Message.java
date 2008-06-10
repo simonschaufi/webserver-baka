@@ -23,7 +23,12 @@ public class Message
     String filePath;
     Interface guiInterface;
 
-    //Konstruktor
+    /**
+     *  Konstruktor
+     *  @param clientRequest: Request des Clients
+     *  @param outputStream: der Output Stream
+     *  @param guiInterface: die GUI
+     */
     public Message(Request clientRequest, OutputStream outputStream, Interface guiInterface) throws ClientException
     {
         //Speichere die Objekte in die lokalen Objekte ab
@@ -99,7 +104,12 @@ public class Message
         }
     }
 
-    //Schreibt POST Request in eine Datei
+    /**
+     *  Schreibt POST Request in eine Datei
+     *  @param postRequest: Inhalt der Nachricht
+     *  @return void
+     *  @throws IOException, falls es zu einem Fehler kommt
+     */
     public void writePostToFile(String postRequest)
     {
         try
@@ -115,7 +125,11 @@ public class Message
         }
     }
 
-    //Sendet eine Datei als OutputStream
+    /**
+     *  Sendet eine Datei als OutputStream
+     *  @return void
+     *  @throws ClientException, falls es zu einem Fehler kommt
+     */
     public void sendFile() throws ClientException
     {
         try
@@ -176,7 +190,11 @@ public class Message
         }
     }
 
-    //ueberprueft, ob die Datei geaendert wurde
+    /**
+     *  ueberprueft, ob die Datei geaendert wurde
+     *  @return void
+     *  @throws ClientException, falls es zu einem Fehler kommt
+     */
     private void checkModifiedStates() throws ClientException
     {
         //Modified Test
@@ -291,6 +309,12 @@ public class Message
         }
     }
 
+
+    /**
+     *  Sendet einen 100 Continue
+     *  @return void
+     *  @throws IOException, falls es zu einem Fehler kommt
+     */
     public void send100Continue()
     {
         try
