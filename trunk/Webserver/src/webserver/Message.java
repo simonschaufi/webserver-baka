@@ -21,7 +21,7 @@ public class Message
     OutputStream outputStream;
     File fileToRead;
     String filePath;
-    Interface guiInterface;
+    WebserverGUI guiInterface;
 
     /**
      *  Konstruktor
@@ -29,7 +29,7 @@ public class Message
      *  @param outputStream: der Output Stream
      *  @param guiInterface: die GUI
      */
-    public Message(Request clientRequest, OutputStream outputStream, Interface guiInterface) throws ClientException
+    public Message(Request clientRequest, OutputStream outputStream, WebserverGUI guiInterface) throws ClientException
     {
         //Speichere die Objekte in die lokalen Objekte ab
         this.guiInterface = guiInterface;
@@ -81,6 +81,7 @@ public class Message
                 {
                     //Abfrage, ob die Datei geaendert wurde
                     checkModifiedStates();
+
                     //Erzeute eine GET Antwort der Datei
                     new CreateResponse(outputStream, fileToRead, clientRequest, guiInterface).generateResponse("GET");
                     //Wenn der Parameter auf true ist, schick die Datei zum Browser
@@ -134,7 +135,7 @@ public class Message
     {
         try
         {
-            ArrayList<Byte> lineBuffer = new ArrayList<Byte>();
+            //ArrayList<Byte> lineBuffer = new ArrayList<Byte>();
             //Hole den Dateipfad und ersetzte HTML-formatierte Leerzeichen durch echte Leerzeichen
             String path = clientRequest.getFilePath().replace("%20", " ");
             //Hole die Datei und speichere sie in einem Bytearray ab
@@ -179,7 +180,7 @@ public class Message
             //alle anderen HTTP Versionen
             else
             {
-                outputStream.write(file);
+                outputStream.write(file, 0, fileLength);
                 outputStream.write(("\r\n").getBytes());
                 outputStream.flush();
             }

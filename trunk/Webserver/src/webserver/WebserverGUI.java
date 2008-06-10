@@ -1,7 +1,6 @@
 /*
  * Interface.java
  *
- * Created on 20. Juni 2007, 10:45
  */
 package webserver;
 
@@ -10,11 +9,10 @@ import java.util.StringTokenizer;
 import java.io.*;
 
 /**
- *
- * @author  skolbens
- * Diese Klasse bildet die Oberfläche
+ * @autor Andreas Paul, JörgMogielinski, Simon Schaufelberger, Netbeans
+ * GUI wird erstellt
  */
-public class Interface extends javax.swing.JFrame
+public class WebserverGUI extends javax.swing.JFrame
 {
     Server server = null;
 
@@ -33,9 +31,9 @@ public class Interface extends javax.swing.JFrame
      * Konstruktor für das Interface, ruft Netbeans-methode initComponents auf,
      * Konstruktor der Oberklasse setzt den Window-Titel fest
      */
-    public Interface()
+    public WebserverGUI()
     {
-        super("MSP Webserver -- yeah!");
+        super("MSP Webserver");
         initComponents();
     }
 
@@ -91,6 +89,8 @@ public class Interface extends javax.swing.JFrame
 
         TextFieldPort.setForeground(new java.awt.Color(0, 0, 0));
 
+        ListMultihoming.setFont(new java.awt.Font("Dialog", 1, 12));
+
         Information.setForeground(new java.awt.Color(255, 0, 51));
 
         Portinformation.setForeground(new java.awt.Color(255, 0, 0));
@@ -119,6 +119,7 @@ public class Interface extends javax.swing.JFrame
         LabelMessages.setText("Server Messages");
 
         ListMessages.setBackground(new java.awt.Color(0, 0, 102));
+        ListMessages.setFont(new java.awt.Font("Dialog", 0, 14));
         ListMessages.setForeground(new java.awt.Color(102, 204, 0));
 
         ButtonSet.setText("set");
@@ -215,11 +216,9 @@ public class Interface extends javax.swing.JFrame
             }
         });
 
-        TextFieldRoot.setFont(new java.awt.Font("Dialog", 2, 12));
-        TextFieldRoot.setForeground(new java.awt.Color(204, 204, 255));
+        TextFieldRoot.setForeground(new java.awt.Color(0, 0, 0));
 
-        TextFieldHost.setFont(new java.awt.Font("Dialog", 2, 12));
-        TextFieldHost.setForeground(new java.awt.Color(204, 204, 255));
+        TextFieldHost.setForeground(new java.awt.Color(0, 0, 0));
 
         LabelHost.setText("Host");
 
@@ -360,8 +359,6 @@ private void ButtonSet_Click(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_B
     }
 }//GEN-LAST:event_ButtonSet_Click
 /**
- * @param Mausevent
- * @return void
  * Methode wird beim Klicken auf den Delete Button ausgeführt
  * DeleteHost2Root_Click löscht die aktuell markierte Zeile in der Host2RootList
  */
@@ -376,7 +373,7 @@ private void ButtonDeleteMultihoming_Click(java.awt.event.MouseEvent evt) {//GEN
 }//GEN-LAST:event_ButtonDeleteMultihoming_Click
 /**
 
- *//**
+ /**
 * Fügt neuen Host/Root kombination in die Multihoming liste dazu
  */
 private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonAddMouseClicked
@@ -397,7 +394,6 @@ private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
  * zwei seperate Strings für Host und Root, und gibt diese in einem
  * String-Array zurück
  * @return Atring Array mit 2 feldern: 0 = Host, 1 = Root
- * 
  */
 private String[] SubstringHostRoot(String MultihomingItem){
     char stringAsChar[] = MultihomingItem.toCharArray();
@@ -421,7 +417,7 @@ private String[] SubstringHostRoot(String MultihomingItem){
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Interface().setVisible(true);
+                new WebserverGUI().setVisible(true);
             }
         });
     }

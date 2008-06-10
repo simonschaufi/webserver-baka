@@ -23,9 +23,9 @@ public class Connection extends Thread {
     Message mMessage; //Deklarieren der Message-Variable
     DataInputStream dataInput; //Deklarieren der DataInputStream-Variable
     Request cRequest; //Deklarieren der ClientRequest-Variable
-    Interface intfGui; //Deklarieren der Interface-Variable
+    WebserverGUI intfGui; //Deklarieren der Interface-Variable
 
-    public Connection(Socket aSocket, Interface intf) {
+    public Connection(Socket aSocket, WebserverGUI intf) {
         this.intfGui = intf;
         /*^^^^
          * Durch Aufruf dieses Konstruktors durch die Klasse 'Server' in ihrer 'run'-Methode
@@ -74,6 +74,7 @@ public class Connection extends Thread {
     }
 
     private void read() {
+        
         try {
             cRequest = new Request(sSocket.getInputStream(), intfGui);
             /*^^^^
@@ -91,6 +92,7 @@ public class Connection extends Thread {
              */
 
             String kOfMsgReq = cRequest.getKindOfRequest();
+            
             /*^^^^
              * Holt sich die Art des Clientrequestes durch die 'ClientRequest'-Methode 'getKindOfRequest'
              * und speichert es als lokale String-Variable
@@ -99,6 +101,7 @@ public class Connection extends Thread {
              */
 
             if (kOfMsgReq.equals("GET")) { // Wenn die Art des Clientrequestes ein 'GET' ist
+                
                 if (Settings.use100Continue) {
                     /*^^^^
                      * In den Einstellungen des Webserver ist die Verwendung von 100 HTTP-Statuscodes erlaubt

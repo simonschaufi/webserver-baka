@@ -20,10 +20,10 @@ public class Server extends Thread {
     public ServerSocket sSocket; //Deklaration des zu öffnenden Sockets
     Connection aConnection; //Die Connection die später geöffnet wird
     Boolean bRun = true; //Die Variable die 'true' gesetzt wird beim Starten und auf 'false' beim Beenden des Webserver über das GUI
-    Interface intfGui = null; //Das hier verwendete GUI für die Methode 'printMessages'
+    WebserverGUI intfGui = null; //Das hier verwendete GUI für die Methode 'printMessages'
     static int port = 80;
 
-    public Server(Interface intf) {
+    public Server(WebserverGUI intf) {
 
         this.intfGui = intf; //Zuweisung des verwendeten GUIs
 
