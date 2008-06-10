@@ -21,7 +21,7 @@ public class Request
     DataInputStream inputStream;
     byte[] InputStreamBytes;
     ArrayList<String> receivedHeader;
-    Interface gui;
+    WebserverGUI gui;
     String version = "";
     String headerType = "";
     String requestedFilePath = null;
@@ -36,7 +36,7 @@ public class Request
      * auswerted und Attribute der Klasse setzt
      * @param innputStream Der InputStream der aud dem Socket eingelesen wurde
      */
-    public Request(InputStream inputStream, Interface i)
+    public Request(InputStream inputStream, WebserverGUI i)
     {
         this.gui = i;
         this.inputStream = new DataInputStream(inputStream);
