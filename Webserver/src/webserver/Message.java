@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.Hashtable;
 
 /**
  * @author  Simon Schaufelberger
@@ -22,6 +23,8 @@ public class Message
     File fileToRead;
     String filePath;
     WebserverGUI guiInterface;
+    Hashtable <String, Integer> months = new Hashtable();
+
 
     /**
      *  Konstruktor
@@ -35,6 +38,20 @@ public class Message
         this.guiInterface = guiInterface;
         this.clientRequest = clientRequest;
         this.outputStream = outputStream;
+        
+        months.put("Jan", 0);
+        months.put("Feb", 1);
+        months.put("Mar", 2);
+        months.put("Apr", 3);
+        months.put("May", 4);
+        months.put("Jun", 5);
+        months.put("Jul", 6);
+        months.put("Aug", 7);
+        months.put("Sep", 8);
+        months.put("Oct", 9);
+        months.put("Noc", 10);
+        months.put("Dec", 11);
+        
         //Hole den Dateipfad und ersetzte HTML-formatierte Leerzeichen durch echte Leerzeichen
         String path = clientRequest.getFilePath().replace("%20", " ");
         fileToRead = new File(path);
@@ -143,47 +160,9 @@ public class Message
             //Speichere die Dateilaenge ab
             int fileLength = file.length;
 
-            //Wenn in den Einstellungen chunked auf true ist und der Clientreqest der Version 1.1 entspricht
-            if (Settings.chunkedData && clientRequest.getVersion().equalsIgnoreCase("HTTP/1.1"))
-            {
-                //Mache kleine Byte-stuecke
-                byte[] chunk = new byte[Settings.chunkedDataSize];
-                int i = 0;
-                for (i = 0; i < fileLength; i++)
-                {
-                    //Sobald die chunk_size (oder ein Vielfaches davon) erreicht ist mach wieder ein neues Packet
-                    if (i % (Settings.chunkedDataSize) == 0 && i > 0)
-                    {
-                        outputStream.write(Integer.toHexString(Settings.chunkedDataSize).getBytes());
-                        outputStream.write(("\r\n").getBytes());
-                        outputStream.write(chunk);
-                        outputStream.write(("\r\n").getBytes());
-                    }
-                    //Hier stehen dann die einzelnen Packete in einem Array drin
-                    chunk[i % (Settings.chunkedDataSize)] = file[i];
-                }
-
-                outputStream.write(Integer.toHexString((i % Settings.chunkedDataSize)).getBytes());
-                outputStream.write(("\r\n").getBytes());
-
-                for (int j = 0; j < (i % Settings.chunkedDataSize); j++)
-                {
-                    outputStream.write(chunk[j]);
-                }
-
-                outputStream.write(("\r\n").getBytes());
-                //Ende der Datei (Hex 0)
-                outputStream.write(Integer.toHexString(0).getBytes());
-                outputStream.write(("\r\n").getBytes());
-                outputStream.write(("\r\n").getBytes());
-            }
-            //alle anderen HTTP Versionen
-            else
-            {
                 outputStream.write(file, 0, fileLength);
                 outputStream.write(("\r\n").getBytes());
                 outputStream.flush();
-            }
         }
         catch (IOException ioEx)
         {
@@ -206,31 +185,9 @@ public class Message
             int[] DateFromClient = new int[6];
             DateFromClient[2] = Integer.parseInt(st.nextToken()); //Tag
             String month = st.nextToken(); //Monat
-
-            if (month.equals("Jan"))
-                DateFromClient[1] = 0;
-            else if (month.equals("Feb"))
-                DateFromClient[1] = 1;
-            else if (month.equals("Mar"))
-                DateFromClient[1] = 2;
-            else if (month.equals("Apr"))
-                DateFromClient[1] = 3;
-            else if (month.equals("May"))
-                DateFromClient[1] = 4;
-            else if (month.equals("Jun"))
-                DateFromClient[1] = 5;
-            else if (month.equals("Jul"))
-                DateFromClient[1] = 6;
-            else if (month.equals("Aug"))
-                DateFromClient[1] = 7;
-            else if (month.equals("Sep"))
-                DateFromClient[1] = 8;
-            else if (month.equals("Oct"))
-                DateFromClient[1] = 9;
-            else if (month.equals("Nov"))
-                DateFromClient[1] = 10;
-            else if (month.equals("Dec"))
-                DateFromClient[1] = 11;
+     
+            DateFromClient[1] = months.get(month);
+            
             DateFromClient[0] = Integer.parseInt(st.nextToken()); //Yahr
             DateFromClient[3] = Integer.parseInt(st.nextToken(":").substring(1)); //Stunden
             DateFromClient[4] = Integer.parseInt(st.nextToken(":")); // Min     
@@ -263,30 +220,8 @@ public class Message
             DateFromClient[2] = Integer.parseInt(st.nextToken()); //Tag
             String month = st.nextToken(); //Monat
 
-            if (month.equals("Jan"))
-                DateFromClient[1] = 0;
-            else if (month.equals("Feb"))
-                DateFromClient[1] = 1;
-            else if (month.equals("Mar"))
-                DateFromClient[1] = 2;
-            else if (month.equals("Apr"))
-                DateFromClient[1] = 3;
-            else if (month.equals("May"))
-                DateFromClient[1] = 4;
-            else if (month.equals("Jun"))
-                DateFromClient[1] = 5;
-            else if (month.equals("Jul"))
-                DateFromClient[1] = 6;
-            else if (month.equals("Aug"))
-                DateFromClient[1] = 7;
-            else if (month.equals("Sep"))
-                DateFromClient[1] = 8;
-            else if (month.equals("Oct"))
-                DateFromClient[1] = 9;
-            else if (month.equals("Nov"))
-                DateFromClient[1] = 10;
-            else if (month.equals("Dec"))
-                DateFromClient[1] = 11;
+            DateFromClient[1] = months.get(month);
+            
             DateFromClient[0] = Integer.parseInt(st.nextToken()); //Yahr
             DateFromClient[3] = Integer.parseInt(st.nextToken(":").substring(1)); //Stunden
             DateFromClient[4] = Integer.parseInt(st.nextToken(":")); //Min     
@@ -309,7 +244,6 @@ public class Message
             }
         }
     }
-
 
     /**
      *  Sendet einen 100 Continue

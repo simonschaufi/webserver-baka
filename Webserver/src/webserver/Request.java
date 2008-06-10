@@ -118,6 +118,7 @@ public class Request
                 postKeyValueString = singleLine;
             }
             lineBefore = singleLine;
+            
         }
         if (version.equals(""))
             version = "HTTP/1.0";
