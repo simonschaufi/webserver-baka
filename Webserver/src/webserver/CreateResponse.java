@@ -16,7 +16,7 @@ public class CreateResponse
     ArrayList<String> httpHeader;
     OutputStream output;
     String persistentConnection;
-    Interface gui;
+    WebserverGUI gui;
     File fileToSend;
     String errorHeader;
     String standardIndexPage = "index.html";    
@@ -32,7 +32,7 @@ public class CreateResponse
      * Für ErrorHeader der Spezifische Error Header
      */
     //GET
-    public CreateResponse(OutputStream out, File file2get, Request request, Interface i)
+    public CreateResponse(OutputStream out, File file2get, Request request, WebserverGUI i)
     {
         httpHeader = new ArrayList<String>();
         this.output = out;
@@ -43,7 +43,7 @@ public class CreateResponse
     }
 
     //Status zb Für POST oder Midiefied/Unmodified
-    public CreateResponse(OutputStream out, Request request, String statusCode, Interface i)
+    public CreateResponse(OutputStream out, Request request, String statusCode, WebserverGUI i)
     {
         httpHeader = new ArrayList<String>();
         this.output = out;
@@ -54,7 +54,7 @@ public class CreateResponse
     }
 
     //ERROR
-    public CreateResponse(OutputStream out, String errorHeader, Request request, Interface i)
+    public CreateResponse(OutputStream out, String errorHeader, Request request, WebserverGUI i)
     {
         this.gui = i;
         httpHeader = new ArrayList<String>();
@@ -91,6 +91,7 @@ public class CreateResponse
             for (int i = 0; i < httpHeader.size(); i++)
             {
                 output.write(httpHeader.get(i).getBytes());
+                System.out.println(i);
                 gui.printMessages((httpHeader.get(i).toString()).trim());
             }
 
@@ -158,6 +159,7 @@ public class CreateResponse
             {
                 addHeaderInfo("Content-Length: " + fileToSend.length());
                 addHeaderInfo("Content-Type: " + fileToSend.toURI().toURL().openConnection().getContentType());
+                  System.out.println(fileToSend.toURI().toURL().openConnection().getContentType());
             }
         }
         catch (IOException ioE)
@@ -207,13 +209,16 @@ public class CreateResponse
      * gesendet wird.
      */
     public void generateResponse(String headerType)
-    {
+    {//System.out.println("sdfasdofsdf");
         if (headerType.equals("GET"))
         {
+            
             addHeaderInfo(getVersion() + " 200 OK");
-            addDate();
+            
+            System.out.println("sdfasdofsdf");addDate();
             checkForPersistentConnection();
             isChunkedData();
+          
         }
         else if (headerType.equals("STATUS"))
         {

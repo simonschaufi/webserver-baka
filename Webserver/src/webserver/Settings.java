@@ -18,7 +18,7 @@ import java.util.TimeZone;
 public class Settings {
 
     /** Sagt aus ob der Server seine Daten chunked versendet */
-    public static boolean chunkedData = true;
+    public static boolean chunkedData = false;
     
     /** Legt die Größe eines Fragmentes (chunk) fest*/
     public static int chunkedDataSize = 20;
